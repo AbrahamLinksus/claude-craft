@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · TALK (single session)</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.tool{border:1px dashed #888;padding:4px 6px;margin:6px 0;background:#f2f2f2}
+pre{margin:0;font-family:inherit}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span class="on">s1 · Add --verbose flag</span><span>s2 · cryo · resumes 17:40</span><span>+</span></div>
+
+  <div class="main">
+    <div class="pane" style="flex:1">
+      <div class="title">s1 · craft/s1 · turn 3</div>
+<pre><b>you</b>  Add a --verbose flag to cli.ts
+
+<b>claude</b>  I'll add a --verbose option to the argument parser and thread it
+        through to the logger.
+</pre>
+      <div class="tool"><pre>▸ Read   src/cli.ts                                    ✓ 84 lines</pre></div>
+      <div class="tool"><pre>▸ Edit   src/cli.ts   +9 −1                             ✓ allowed (radar: no overlap)</pre></div>
+      <div class="tool"><pre>▸ Bash   npm run test:unit                              … running 0:42</pre></div>
+<pre>
+<b>claude</b>  Tests are running. Meanwhile, the flag is parsed in parseArgs()
+        and passed as { verbose } to createLogger().▌
+</pre>
+      <div class="note" style="margin-top:8px">end of turn → Craft commits: "craft s1 · turn 3: Add a --verbose flag to cli.ts"</div>
+    </div>
+
+    <div class="pane" style="width:300px">
+      <div class="title">files · notes-app (worktree s1)</div>
+<pre>▾ src
+    cli.ts            M  <span class="note">(red)</span>
+    logger.ts         M  <span class="note">(red)</span>
+    db.ts                <span class="note">(green)</span>
+  ▾ routes
+      index.ts           <span class="note">(green)</span>
+▾ tests
+    cli.test.ts       ?  <span class="note">(red, untracked)</span>
+  package.json           <span class="note">(green)</span>
+  README.md              <span class="note">(green)</span>
+</pre>
+      <div class="note" style="margin-top:8px">green committed · yellow staged · red modified/untracked</div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="chip">TALK</span><span class="note">(blue)</span>
+    <span>notes-app</span><span>·</span><span>s1</span><span>·</span><span>Sonnet <span class="note">(blue)</span></span><span>·</span><span>craft/s1 M2 S0 ↑2</span><span>·</span><span>1 running · 1 cryo</span>
+  </div>
+  <div class="input">&gt; <span class="note">type to talk to s1 · enter send · esc LAB_</span></div>
+</div>
+</body></html>

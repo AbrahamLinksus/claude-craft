@@ -1,0 +1,6 @@
+{
+  "name": "@craft-graft/keep-warm",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module"
+}

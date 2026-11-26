@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Git</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.col{display:flex;flex-direction:column}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.sel{background:#ccc}
+.modal{position:absolute;left:330px;top:300px;width:560px;border:2px solid #000;background:#fff;padding:10px;box-shadow:4px 4px 0 #999}
+pre{margin:0;font-family:inherit}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span>s1</span><span class="on">s2</span><span>s3</span><span>s4</span><span class="note" style="border:0">:git</span></div>
+
+  <div class="main">
+    <div class="pane" style="flex:1">
+      <div class="title">graph · notes-app</div>
+<pre>  UNMERGED (above trunk)
+  craft/s4   o──o                         2 ahead   idle
+  craft/s3        o                       1 ahead   held
+  craft/s2     o──o──o                    3 ahead   ← selected
+  craft/s1   o──o──o                      3 ahead   running
+             │     │
+  main  ─────●─────●───────────●──────●   ↑0 (pushed: origin/main @ ●3)
+             │                 │
+  MERGED (below trunk)
+  craft/s0   o──o──┘                      merged 24 Nov
+  graveyard  craft/s5, craft/s7           race losers (kept)
+</pre>
+    </div>
+    <div class="col" style="width:420px">
+      <div class="pane" style="flex:1">
+        <div class="title">branches</div>
+<pre>  craft/s1   ↑3  M2 S0   running
+<span class="sel">&gt; craft/s2   ↑3  M0 S0   idle      </span>
+  craft/s3   ↑1  M0 S0   held
+  craft/s4   ↑2  M0 S0   idle
+  craft/s0   merged
+</pre>
+      </div>
+      <div class="pane" style="height:190px">
+        <div class="title">overlap warnings</div>
+<pre>! src/db.ts      craft/s2 · craft/s3
+! src/routes.ts  craft/s1 · craft/s4
+</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal">
+    <div class="title">confirm</div>
+<pre>Merge craft/s2 into main (3 commits)?
+  src/date.ts       +12 −3
+  tests/date.test.ts +18 −0
+
+y yes · n no            (u undoes until main is pushed)</pre>
+    <div class="note" style="margin-top:6px">undo after main moved: adds "Undo merge of craft/s2", later commits stay</div>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s2</span><span>·</span><span>Opus <span class="note">(orange)</span></span><span>·</span><span>craft/s2 M0 S0 ↑3</span><span>·</span><span>4 sessions</span>
+  </div>
+  <div class="input">mb_ <span class="note">j/k select · mb merge · vb review diff · :rebase · :prune · u undo · q close</span></div>
+</div>
+</body></html>

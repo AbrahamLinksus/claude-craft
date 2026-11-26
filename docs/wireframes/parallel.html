@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Parallel</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.pane.focus{border:2px solid #000}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+pre{margin:0;font-family:inherit;font-size:12px}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span class="on">s1</span><span>s2</span><span>s3</span><span>s4</span><span>s5 · cryo</span><span class="note" style="border:0">:sessions · layout Parallel (t: switch to Tiling)</span></div>
+
+  <div class="main">
+    <div class="pane focus" style="flex:1">
+      <div class="title">s1 · Sonnet · craft/s1 · running</div>
+<pre><b>you</b> Add a --verbose flag to cli.ts
+<b>claude</b> Flag parsed in parseArgs()…
+▸ Edit src/cli.ts +9 −1   ✓
+▸ Bash npm run test:unit  … 0:42
+</pre>
+    </div>
+    <div class="pane" style="flex:1">
+      <div class="title">s2 · Opus · craft/s2 · running</div>
+<pre><b>you</b> Fix failing date parser test
+<b>claude</b> The parser drops Feb 29…
+▸ Edit src/date.ts +12 −3  ✓
+▸ Bash npm run lint        ✓ 0
+</pre>
+    </div>
+    <div class="pane" style="flex:1">
+      <div class="title">s3 · Sonnet · craft/s3 · running</div>
+<pre><b>you</b> Move db config to env
+<b>claude</b> Reading src/db.ts…
+▸ Read src/db.ts           ✓
+▸ Edit src/db.ts  held (radar)
+</pre>
+    </div>
+    <div class="pane" style="flex:1">
+      <div class="title">s4 · Haiku · craft/s4 · idle</div>
+<pre><b>you</b> Write README usage section
+<b>claude</b> Done. Added 3 examples.
+turn 2 committed
+</pre>
+    </div>
+
+    <div class="pane" style="width:250px">
+      <div class="title">worktrees (:wt)</div>
+<pre>~/.craft/worktrees/notes-app/
+ s1  craft/s1  M2 S0 ↑2
+ s2  craft/s2  M1 S0 ↑3
+ s3  craft/s3  M0 S0 ↑1
+ s4  craft/s4  M0 S0 ↑2
+ s5  craft/s5  cryo
+     resumes Mon 09:00
+</pre>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s1</span><span>·</span><span>Sonnet</span><span>·</span><span>craft/s1 M2 S0 ↑2</span><span>·</span><span>4 running · 1 cryo · cap 5</span>
+  </div>
+  <div class="input">: <span class="note">h/l move between panes · enter focus · q close · t tiling</span></div>
+</div>
+</body></html>

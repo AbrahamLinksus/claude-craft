@@ -1,0 +1,10 @@
+node_modules
+dist
+out
+coverage
+.tools
+.results
+.devteam
+pnpm-lock.yaml
+*.md
+docs

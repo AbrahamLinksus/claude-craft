@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Graft manager</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.col{display:flex;flex-direction:column}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.sel{background:#ccc}
+pre{margin:0;font-family:inherit}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span>s1</span><span>s2</span><span class="on">:graft</span></div>
+
+  <div class="main">
+    <div class="col" style="flex:1">
+      <div class="pane" style="flex:1">
+        <div class="title">installed · dose 0 off · 1 minimal · 3 default · 5 maximal</div>
+<pre>  worktrees     v1.0.0   dose ○○○●○○  3
+  git           v1.0.0   dose ○○○●○○  3
+  usage         v1.0.0   dose ○○○●○○  3
+  keep-warm     v1.0.0   dose ○●○○○○  1   pings count toward limits
+<span class="sel">&gt; radar         v1.0.0   dose ○○○○○●  5   ← changed from 4          </span>
+  race          v1.0.0   dose ○○○●○○  3
+  sample-hello  v0.1.0   dose ○○○●○○  3   sample graft (in Craft's repo)
+  my-graft      v0.0.3   ERROR  Key p claimed by race and my-graft
+</pre>
+      </div>
+      <div class="pane" style="height:200px">
+        <div class="title">shelf</div>
+<pre>  orchestrator  v1.0.0   the dev-team-setup team · :team, object t
+  budget        v1.0.0   caps cost or tokens per session · :budget
+  recorder      v1.0.0   records a session timeline · :replay
+
+  enter install (shows leaflet, y/n) · X remove selected installed graft
+</pre>
+      </div>
+    </div>
+    <div class="pane" style="width:430px">
+      <div class="title">leaflet · radar v1.0.0</div>
+<pre>Watches tool calls, holds an edit that
+overlaps another branch, tracks file
+ownership.
+
+May:
+  ✓ read tool calls
+  ✓ read git status
+  ✓ read worktree paths
+  ✓ hold or deny tool calls
+May not:
+  ✗ use the network
+  ✗ read transcripts
+  ✗ start sessions
+  ✗ write files
+
+Dose:
+  1  log overlaps only
+  3  default (levels documented
+     by the graft)
+  5  hold every cross-branch edit
+
+Adds: :radar, hold prompt
+</pre>
+      <div class="note" style="margin-top:6px">advanced: r raw settings</div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s1</span><span>·</span><span>Sonnet <span class="note">(blue)</span></span><span>·</span><span>craft/s1 M0 S0 ↑3</span><span>·</span><span>2 sessions</span>
+  </div>
+  <div class="input">: <span class="note">j/k select · h/l dose − / + · enter install · X remove · tab installed/shelf · q close</span></div>
+</div>
+</body></html>

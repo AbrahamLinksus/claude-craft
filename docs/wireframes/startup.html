@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Startup</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.sel{background:#ccc}
+.modal{position:absolute;border:2px solid #000;background:#fff;padding:10px;box-shadow:4px 4px 0 #999}
+pre{margin:0;font-family:inherit}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+
+  <div class="main" style="flex-direction:column;align-items:center;justify-content:center">
+    <div class="pane" style="width:720px">
+      <div class="title">Pick a repo</div>
+<pre>
+<span class="sel">&gt; 1  notes-app    C:\Users\Jake\code\notes-app      opened today 08:12  </span>
+  2  craft-site   C:\Users\Jake\code\craft-site     opened Mon 17:40
+  3  api          D:\work\api                       opened 19 Nov
+  4  old-blog     C:\Users\Jake\code\old-blog       missing · x remove from list
+  ─────────────────────────────────────────────────────────────────
+  o  open folder…
+</pre>
+      <div class="note" style="margin-top:6px">j/k move · enter or 1–4 open · o open folder · not a git repo → "not a git repo: &lt;path&gt;"</div>
+    </div>
+
+    <div class="pane" style="width:720px;height:220px;margin-top:16px">
+      <div class="title">notes-app · empty buffer</div>
+<pre>
+
+
+                     What should Claude work on in notes-app?
+
+</pre>
+    </div>
+    <div class="note">hint: type a prompt + enter to start a session · esc LAB · :repo switch repo · :help</div>
+  </div>
+
+  <div class="modal" style="right:24px;top:60px;width:330px">
+    <div class="title">After a crash / restart (alternate state)</div>
+<pre>
+Craft stopped unexpectedly.
+4 sessions are back as cryo.
+1 unknown worktree:
+  notes-app/s9   (no record)
+
+d delete · k keep
+</pre>
+  </div>
+
+  <div class="status">
+    <span class="chip">TALK</span><span class="note">(blue)</span>
+    <span>notes-app</span><span>·</span><span>no session</span><span>·</span><span>Sonnet <span class="note">(blue)</span></span><span>·</span><span>main</span><span>·</span><span>0 sessions</span>
+  </div>
+  <div class="input">&gt; <span class="note">Add a --verbose flag to cli.ts_</span></div>
+</div>
+</body></html>

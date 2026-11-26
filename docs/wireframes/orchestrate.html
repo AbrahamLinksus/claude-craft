@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Orchestrate</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.strip{display:flex;gap:0;border:1px solid #999;margin:4px 8px}
+.strip span{flex:1;padding:4px 8px;border-right:1px solid #aaa;text-align:center}
+.strip .on{background:#333;color:#fff;font-weight:bold}
+.strip .done{background:#ddd}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.col{display:flex;flex-direction:column}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.slots{display:inline-block;letter-spacing:2px}
+pre{margin:0;font-family:inherit;font-size:12px}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="strip"><span class="done">spec ✓</span><span class="done">design ✓</span><span class="done">plan ✓</span><span class="on">build · M1</span><span>review</span><span>ship</span></div>
+
+  <div class="main">
+    <div class="pane" style="width:360px">
+      <div class="title">orchestrator · craft-site</div>
+<pre><b>orch</b>  Plan approved: 8 tasks, 2 milestones.
+      Starting T-01 foundation alone.
+<b>orch</b>  T-01 done. Starting T-02, T-03,
+      T-04 in parallel.
+<b>orch</b>  T-03 tests failed (2/14). Checkpoint
+      below: retry with debugger, or skip?
+<b>you</b>   retry
+<b>orch</b>  Debugger started on T-03.▌
+</pre>
+    </div>
+    <div class="col" style="flex:1">
+      <div class="pane">
+        <div class="title">parallelism · 3 / 8</div>
+<pre><span class="slots">[■][■][■][ ][ ][ ][ ][ ]</span>   cap 8 (setting)</pre>
+      </div>
+      <div class="pane" style="flex:1">
+        <div class="title">swimlanes</div>
+<pre>frontend-coder  │ T-02 home page ████████░░  coding
+backend-coder   │ T-04 contact form ███░░░░░  coding
+debugger        │ T-03 blog list   ██░░░░░░░  fixing (tests 12/14)
+tester          │ —                           idle
+reviewer        │ T-01 foundation  ██████████ done ✓
+</pre>
+      </div>
+      <div class="col" style="flex-direction:row;height:220px">
+        <div class="pane" style="flex:1">
+          <div class="title">task queue</div>
+<pre>T-05 rss feed       waits on T-03
+T-06 search         waits on T-03
+T-07 dark mode      ready
+T-08 wire-up        waits on T-02..T-07
+</pre>
+        </div>
+        <div class="pane" style="flex:1">
+          <div class="title">checkpoints</div>
+<pre>✓ spec approved        24 Nov
+✓ plan approved        25 Nov
+? T-03 failed tests    now
+  r retry · s skip · v view
+  M1 demo              pending
+</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="chip">TALK</span><span class="note">(blue)</span>
+    <span>craft-site</span><span>·</span><span>orchestrator</span><span>·</span><span>Opus <span class="note">(orange)</span></span><span>·</span><span>main ↑0</span><span>·</span><span>2 sessions · team 3/8</span>
+  </div>
+  <div class="input">&gt; <span class="note">talk to the orchestrator · esc LAB · :team q close</span></div>
+</div>
+</body></html>

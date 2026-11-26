@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · LAB</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.hint{padding:4px 10px;border-top:1px solid #aaa;background:#ececec;font-size:12px}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.sel{background:#ccc}
+.popup{position:absolute;left:12px;bottom:104px;width:420px;border:2px solid #000;background:#fff;padding:8px;box-shadow:4px 4px 0 #999}
+pre{margin:0;font-family:inherit}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span class="on">s1 · Add --verbose flag</span><span>s2</span><span>s3</span></div>
+
+  <div class="main">
+    <div class="pane" style="flex:1">
+      <div class="title">s1 · chat (paused input: keys go to Craft, not to Claude)</div>
+<pre><b>you</b>  Add a --verbose flag to cli.ts
+<b>claude</b>  Done. --verbose is parsed in parseArgs() and passed to
+        createLogger(). Tests 41/41.
+▸ Edit src/cli.ts +9 −1  ✓
+turn 3 committed · craft/s1 ↑3
+</pre>
+    </div>
+    <div class="pane" style="width:440px">
+      <div class="title">open panel · :wt</div>
+<pre><span class="sel">&gt; s1  craft/s1  ~/.craft/worktrees/notes-app/s1   ↑3 </span>
+  s2  craft/s2  ~/.craft/worktrees/notes-app/s2   ↑3
+  s3  craft/s3  ~/.craft/worktrees/notes-app/s3   ↑1
+</pre>
+      <div class="note" style="margin-top:10px">j/k move · enter focus · q close</div>
+      <div class="title" style="margin-top:20px">macros</div>
+<pre>a  recorded: 3fs → :race       @a replay
+recording: off  (qa … q)</pre>
+    </div>
+  </div>
+
+  <div class="popup">
+    <div class="title">3f… what next?</div>
+<pre>s   session    (core)       fork this session 3×
+a   attempts   (race)       race 3 attempts at this task
+
+esc cancel · any other key cancels with a hint</pre>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s1</span><span>·</span><span>Sonnet <span class="note">(blue)</span></span><span>·</span><span>craft/s1 M0 S0 ↑3</span><span>·</span><span>3 running</span>
+  </div>
+  <div class="hint">count + verb + object · f fork · m merge · x stop · r resume · v review · p pick · u undo · . repeat │ s session · b branch · t task · a attempts │ :cmd panels · qa…q macro · i/enter TALK</div>
+  <div class="input">pending: <b>3f</b>_ <span class="note">(last: xs · u undoes: merge craft/s2)</span></div>
+</div>
+</body></html>

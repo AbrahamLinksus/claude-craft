@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Radar</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;min-height:0;padding:4px}
+.col{display:flex;flex-direction:column}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.hold{border:3px double #000;margin:4px;padding:10px;background:#eee}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.heat{display:inline-block;height:9px;background:#666;vertical-align:middle}
+pre{margin:0;font-family:inherit;font-size:12px}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span>s1</span><span class="on">s2 · HELD</span><span>s3</span><span>s4</span><span class="note" style="border:0">:radar · dose 4</span></div>
+
+  <div class="hold">
+    <div class="title">HOLD 1 of 2 · all keys answer this prompt</div>
+<pre>s2 wants to edit src/db.ts — also changed on craft/s3 (4 min ago).
+
+    a allow + flag        w wait for merge        d deny
+
+<span class="note">waiting: 2 of 2 · s4 wants to edit src/routes.ts (craft/s5)</span></pre>
+  </div>
+
+  <div class="main">
+    <div class="pane" style="flex:1">
+      <div class="title">file ownership · edit heat</div>
+<pre>craft/s1   src/cli.ts         <span class="heat" style="width:90px"></span> 6 edits
+           src/logger.ts      <span class="heat" style="width:30px"></span> 2
+craft/s2   src/date.ts        <span class="heat" style="width:120px"></span> 8
+           src/db.ts          <span class="heat" style="width:15px"></span> 1  ← held
+craft/s3   src/db.ts          <span class="heat" style="width:60px"></span> 4  ! overlap s2
+           src/config.ts      <span class="heat" style="width:45px"></span> 3
+craft/s4   README.md          <span class="heat" style="width:30px"></span> 2
+</pre>
+    </div>
+    <div class="col" style="width:520px">
+      <div class="pane" style="flex:1">
+        <div class="title">branch graph (live)</div>
+<pre>  craft/s4   o─o
+  craft/s3   o─o─o        src/db.ts
+  craft/s2   o─o─o─?      src/db.ts (held)
+  craft/s1   o─o─o
+             │ │ │
+  main  ─────●─●─●─────── ↑0
+</pre>
+      </div>
+      <div class="pane" style="flex:1">
+        <div class="title">change feed</div>
+<pre>10:42:07  s2  Edit src/db.ts         HELD   radar
+10:41:55  s1  Edit src/cli.ts        allow  radar
+10:41:30  s3  Edit src/config.ts     allow  radar
+10:40:12  s4  Write README.md        allow  radar
+10:38:02  s3  Edit src/db.ts         allow  radar
+10:37:44  s1  Bash npm run lint      allow  budget
+</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s2</span><span>·</span><span>Opus <span class="note">(orange)</span></span><span>·</span><span>craft/s2 M1 S0 ↑3</span><span>·</span><span>4 running · 1 held</span>
+  </div>
+  <div class="input">hold open: a / w / d <span class="note">(nothing typed reaches the chat while a hold is open)</span></div>
+</div>
+</body></html>

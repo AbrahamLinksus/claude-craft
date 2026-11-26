@@ -2,3 +2,10 @@
 .results/
 .venv/
 node_modules/
+
+dist/
+out/
+coverage/
+.tools/
+*.log
+.npmrc

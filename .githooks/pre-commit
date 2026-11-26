@@ -1,0 +1,22 @@
+#!/bin/sh
+# Fast checks on staged files. Full gate: scripts/check.sh
+cd "$(git rev-parse --show-toplevel)" || exit 1
+files=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$files" ] && exit 0
+code_files=$(echo "$files" | grep -E '\.(ts|tsx|js|mjs|cjs)$' || true)
+fmt_files=$(echo "$files" | grep -E '\.(ts|tsx|js|mjs|cjs|json|yaml|yml|css)$' || true)
+status=0
+if [ -n "$code_files" ]; then echo "$code_files" | xargs pnpm eslint || status=1; fi
+if [ -n "$fmt_files" ]; then echo "$fmt_files" | xargs pnpm prettier --check || status=1; fi
+# gitleaks lookup: this checkout, then the main checkout, then PATH
+main_root="$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")"
+GITLEAKS=""
+for d in ./.tools/bin "$main_root/.tools/bin"; do
+  for n in gitleaks.exe gitleaks; do
+    if [ -x "$d/$n" ]; then GITLEAKS="$d/$n"; break 2; fi
+  done
+done
+if [ -z "$GITLEAKS" ] && command -v gitleaks >/dev/null 2>&1; then GITLEAKS=gitleaks; fi
+if [ -n "$GITLEAKS" ]; then "$GITLEAKS" protect --staged --redact || status=1
+else echo "gitleaks not found (run: bash scripts/setup-tools.sh)"; status=1; fi
+exit $status

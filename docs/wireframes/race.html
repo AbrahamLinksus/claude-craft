@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Craft wireframe · Race</title>
+<style>
+body{margin:0;background:#fff;font-family:Consolas,"Courier New",monospace;font-size:13px;color:#111}
+.app{width:1280px;height:800px;display:flex;flex-direction:column;border:1px solid #222;box-sizing:border-box;position:relative}
+.bar{display:flex;gap:24px;align-items:center;padding:5px 10px;background:#e6e6e6;border-bottom:1px solid #888}
+.meter{display:inline-block;width:120px;height:10px;border:1px solid #444;vertical-align:middle;margin:0 6px}
+.meter i{display:block;height:100%;background:#777}
+.tabs{display:flex;border-bottom:1px solid #888;background:#f0f0f0}
+.tabs span{padding:3px 14px;border-right:1px solid #aaa}
+.tabs .on{background:#fff;font-weight:bold;border-bottom:2px solid #000}
+.main{flex:1;display:flex;flex-direction:column;min-height:0;padding:4px}
+.row{display:flex;flex:1;min-height:0}
+.pane{border:1px solid #999;margin:4px;padding:8px;overflow:hidden;box-sizing:border-box}
+.pane.focus{border:2px solid #000}
+.title{font-weight:bold;border-bottom:1px dashed #999;padding-bottom:3px;margin-bottom:6px}
+.status{display:flex;gap:10px;padding:4px 10px;background:#d6d6d6;border-top:1px solid #888}
+.chip{border:1px solid #000;padding:0 8px;font-weight:bold}
+.chip.lab{background:#333;color:#fff}
+.input{padding:7px 10px;border-top:1px solid #888;background:#f4f4f4}
+.note{color:#777;font-size:11px}
+.modal{position:absolute;left:400px;top:330px;width:480px;border:2px solid #000;background:#fff;padding:10px;box-shadow:4px 4px 0 #999}
+pre{margin:0;font-family:inherit;font-size:12px}
+</style></head>
+<body>
+<div class="app">
+  <div class="bar">
+    <b>Craft</b>
+    <span>5h <span class="meter"><i style="width:72%"></i></span>72% · resets 17:40 <span class="note">(yellow)</span></span>
+    <span>week <span class="meter"><i style="width:31%"></i></span>31% · resets Mon 09:00 <span class="note">(green)</span></span>
+    <span>1.84M tok</span><span>$6.12</span>
+  </div>
+  <div class="tabs"><span>s1</span><span class="on">race · Fix failing date parser test</span><span class="note" style="border:0">review: off (settings) · judged by tests + lint</span><span class="note" style="border:0">tests: npm run test:unit · lint: npm run lint (guessed from package.json · e edit for notes-app)</span></div>
+
+  <div class="main">
+    <div class="row">
+      <div class="pane" style="flex:1">
+        <div class="title">attempt 1 · s5 · craft/s5</div>
+<pre>status   finished
+diff     +20 / −9   (3 files)
+tests    39 / 41    ✗ 2 failing
+lint     2 warnings
+review   off
+
+src/date.ts        +14 −7
+src/format.ts      +6  −2
+</pre>
+      </div>
+      <div class="pane focus" style="flex:1">
+        <div class="title">attempt 2 · s6 · craft/s6   ← selected</div>
+<pre>status   finished
+diff     +12 / −3   (2 files)
+tests    41 / 41    ✓
+lint     0
+review   off
+
+src/date.ts        +9  −3
+tests/date.test.ts +3  −0
+</pre>
+      </div>
+      <div class="pane" style="flex:1">
+        <div class="title">attempt 3 · s7 · craft/s7</div>
+<pre>status   running · turn 3
+diff     +7 / −1
+tests    … running
+lint     —
+review   off
+
+src/date.ts        +7  −1
+</pre>
+      </div>
+    </div>
+    <div class="pane" style="height:170px">
+      <div class="title">fork graph</div>
+<pre>  s1 ── turn 4 ──┬── s5 attempt 1   o──o──o   finished
+                 ├── s6 attempt 2   o──o      finished  ★ best so far
+                 └── s7 attempt 3   o──o──    running
+  graveyard: (empty)                when review is on: "review on: uses your limits" · card adds "review 8/10 · &lt;reason&gt;"
+</pre>
+    </div>
+  </div>
+
+  <div class="modal">
+    <div class="title">confirm pick</div>
+<pre>Pick attempt 2 (craft/s6) as winner?
+s5 and s7 move to the graveyard (kept, not deleted).
+
+y yes · n no             (u un-picks until pushed)</pre>
+  </div>
+
+  <div class="status">
+    <span class="chip lab">LAB</span><span class="note">(amber)</span>
+    <span>notes-app</span><span>·</span><span>s6</span><span>·</span><span>Sonnet <span class="note">(blue)</span></span><span>·</span><span>craft/s6 M0 S0 ↑2</span><span>·</span><span>4 running · race 3</span>
+  </div>
+  <div class="input">pa_ <span class="note">h/l select attempt · va review diff · pa pick winner · q close</span></div>
+</div>
+</body></html>

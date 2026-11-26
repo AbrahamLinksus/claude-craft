@@ -1,0 +1,17 @@
+{
+  "_comment": "Craft monorepo layout (LLD §0.2): daemon code lives in packages/daemon and grafts/*/daemon, client code in packages/client, packages/graft-ui and grafts/*/ui. The default frontend_dirs/backend_dirs globs don't match these paths, so each coder is kept out of the other side here. Perf budgets are a gate.",
+  "agents": {
+    "backend-coder": {
+      "deny": ["packages/client/**", "packages/graft-ui/**", "grafts/*/ui/**", "tools/perf/budgets.json", "playwright.config.ts"]
+    },
+    "agent-engineer": {
+      "deny": ["packages/client/**", "packages/graft-ui/**", "grafts/*/ui/**", "tools/perf/budgets.json", "playwright.config.ts"]
+    },
+    "frontend-coder": {
+      "deny": ["packages/daemon/**", "packages/graft-api/**", "grafts/*/daemon/**", "tools/perf/budgets.json", "playwright.config.ts"]
+    },
+    "debugger": {
+      "deny": ["tools/perf/budgets.json", "playwright.config.ts"]
+    }
+  }
+}
