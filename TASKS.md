@@ -124,9 +124,9 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 ### T-04 · Command plumbing: grammar registry, prompt queue, undo journal
 - Owner: backend-coder
 - Depends on: T-01, T-01c
-- Files: packages/daemon/src/grammar/**, packages/daemon/src/prompts/**, packages/daemon/src/undo/**, packages/daemon/tests/{grammar,prompts,undo}/**
+- Files: packages/daemon/src/grammar/**, packages/daemon/src/prompts/**, packages/daemon/src/undo/**, packages/daemon/tests/{grammar,prompts,undo}/**, packages/daemon/src/main.ts
 - Context: SPEC US-04, US-05, US-08, US-30, US-34 · LLD §9, §10, §16.1 · files: packages/protocol/src/*, packages/daemon/src/main.ts
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] The grammar table in the snapshot lists core verbs `f x r u .` and object `s` with owners; registering key `p` twice fails with "Key p claimed by race and my-graft" and the second registration is not added (US-30, S-15)
   - [ ] Prompt queue: two holds and one approval asked at once show one at a time as "1 of 3 · s2 wants to edit src/db.ts …" in arrival order; answering resolves only the prompt on screen and the next shows "2 of 3"; a key not among its options keeps it open (`INVALID_KEY`) (US-08, S-04, G-05)
