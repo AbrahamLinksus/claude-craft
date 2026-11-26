@@ -1,0 +1,194 @@
+{
+  "variant": "default",
+  "kill": "stop-process",
+  "descendantsBefore": [
+    {
+      "name": "claude.exe",
+      "pid": 22072,
+      "ppid": 22016
+    },
+    {
+      "name": "claude.exe",
+      "pid": 31848,
+      "ppid": 22016
+    },
+    {
+      "name": "claude.exe",
+      "pid": 36716,
+      "ppid": 22016
+    },
+    {
+      "name": "claude.exe",
+      "pid": 34160,
+      "ppid": 22016
+    },
+    {
+      "name": "claude.exe",
+      "pid": 15020,
+      "ppid": 22016
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 10940,
+      "ppid": 15020
+    },
+    {
+      "name": "bash.exe",
+      "pid": 15152,
+      "ppid": 15020
+    },
+    {
+      "name": "bash.exe",
+      "pid": 30144,
+      "ppid": 15152
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 12176,
+      "ppid": 30144
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 34080,
+      "ppid": 34160
+    },
+    {
+      "name": "bash.exe",
+      "pid": 14000,
+      "ppid": 34160
+    },
+    {
+      "name": "bash.exe",
+      "pid": 18724,
+      "ppid": 14000
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 22076,
+      "ppid": 18724
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 36676,
+      "ppid": 36716
+    },
+    {
+      "name": "bash.exe",
+      "pid": 17576,
+      "ppid": 36716
+    },
+    {
+      "name": "bash.exe",
+      "pid": 12188,
+      "ppid": 17576
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 18104,
+      "ppid": 12188
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 17500,
+      "ppid": 31848
+    },
+    {
+      "name": "bash.exe",
+      "pid": 2680,
+      "ppid": 31848
+    },
+    {
+      "name": "bash.exe",
+      "pid": 33552,
+      "ppid": 2680
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 26324,
+      "ppid": 33552
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 33112,
+      "ppid": 22072
+    },
+    {
+      "name": "bash.exe",
+      "pid": 16952,
+      "ppid": 22072
+    },
+    {
+      "name": "bash.exe",
+      "pid": 18696,
+      "ppid": 16952
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 31112,
+      "ppid": 18696
+    }
+  ],
+  "survivors": [
+    {
+      "name": "bash.exe",
+      "pid": 15152
+    },
+    {
+      "name": "bash.exe",
+      "pid": 30144
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 12176
+    },
+    {
+      "name": "bash.exe",
+      "pid": 14000
+    },
+    {
+      "name": "bash.exe",
+      "pid": 18724
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 22076
+    },
+    {
+      "name": "bash.exe",
+      "pid": 17576
+    },
+    {
+      "name": "bash.exe",
+      "pid": 12188
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 18104
+    },
+    {
+      "name": "bash.exe",
+      "pid": 2680
+    },
+    {
+      "name": "bash.exe",
+      "pid": 33552
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 26324
+    },
+    {
+      "name": "bash.exe",
+      "pid": 16952
+    },
+    {
+      "name": "bash.exe",
+      "pid": 18696
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 31112
+    }
+  ],
+  "daemonAlive": false
+}

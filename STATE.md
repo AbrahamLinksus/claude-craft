@@ -14,10 +14,10 @@
 | Runners | to be checked when the build starts |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M1 · Skeleton and spikes (0/3 tasks) |
+| Milestone | M1 · Skeleton and spikes (1/3 tasks) |
 | Next step | Round 1: T-01, T-02, T-03 |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 07:41 +05:30 |
+| Last updated | 2026-11-26 08:27 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -46,6 +46,7 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Known minors
 | Task | Where | Fix | Size |
 |---|---|---|---|
+| T-02 | spikes/sdk/s5-driver.mjs:79-82 | wait on `close` not `exit`; guard the PID match | ≈2 min |
 
 ## Context additions
 | Role | Also read | Why (from gap report) |
@@ -56,3 +57,5 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 - Owner's original spec is saved verbatim at docs/source/spec-v2.md.
 - (resolved 2026-11-26: plan approved) Paused at stage 6: the planning card was shown (30 tasks, 16 rounds, parallel factor 1.88; warnings: 12 milestones kept by D-05/D-15; T-04/05/06/28 are intended shared-code tasks). On resume, re-send that card. All planning work is on branch wip/plan (worktree claude-craft-wt/plan), not yet on main.
 - LLD frozen list still names vitest.workspace.ts; the env step made it root vitest.config.ts (architect to fix at the next as-built sync).
+- T-02 follow-ups: approve `koffi` at the task that builds process/ (reaper tier B); clean-env re-run of the API-key precedence finding before changing LLD §6.3; LLD §6.2 auth mapping refinement (Not logged in → AUTH_MISSING); holds > 600 s unmeasured.
+- Owner's weekly Claude limit was at 99% during T-02 (2026-11-26).

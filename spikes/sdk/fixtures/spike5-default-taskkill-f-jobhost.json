@@ -1,0 +1,134 @@
+{
+  "variant": "default",
+  "kill": "taskkill-f",
+  "hosted": true,
+  "descendantsBefore": [
+    {
+      "name": "claude.exe",
+      "pid": 27460,
+      "ppid": 10148
+    },
+    {
+      "name": "claude.exe",
+      "pid": 18416,
+      "ppid": 10148
+    },
+    {
+      "name": "claude.exe",
+      "pid": 37480,
+      "ppid": 10148
+    },
+    {
+      "name": "claude.exe",
+      "pid": 8348,
+      "ppid": 10148
+    },
+    {
+      "name": "claude.exe",
+      "pid": 3476,
+      "ppid": 10148
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 13496,
+      "ppid": 3476
+    },
+    {
+      "name": "bash.exe",
+      "pid": 25616,
+      "ppid": 3476
+    },
+    {
+      "name": "bash.exe",
+      "pid": 2332,
+      "ppid": 25616
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 20824,
+      "ppid": 2332
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 36312,
+      "ppid": 8348
+    },
+    {
+      "name": "bash.exe",
+      "pid": 38684,
+      "ppid": 8348
+    },
+    {
+      "name": "bash.exe",
+      "pid": 37608,
+      "ppid": 38684
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 28928,
+      "ppid": 37608
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 15076,
+      "ppid": 37480
+    },
+    {
+      "name": "bash.exe",
+      "pid": 12812,
+      "ppid": 37480
+    },
+    {
+      "name": "bash.exe",
+      "pid": 3460,
+      "ppid": 12812
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 26272,
+      "ppid": 3460
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 25624,
+      "ppid": 18416
+    },
+    {
+      "name": "bash.exe",
+      "pid": 35636,
+      "ppid": 18416
+    },
+    {
+      "name": "bash.exe",
+      "pid": 11188,
+      "ppid": 35636
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 12520,
+      "ppid": 11188
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 32604,
+      "ppid": 27460
+    },
+    {
+      "name": "bash.exe",
+      "pid": 11204,
+      "ppid": 27460
+    },
+    {
+      "name": "bash.exe",
+      "pid": 34316,
+      "ppid": 11204
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 25756,
+      "ppid": 34316
+    }
+  ],
+  "survivors": [],
+  "daemonAlive": false
+}

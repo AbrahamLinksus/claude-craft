@@ -1,0 +1,150 @@
+{
+  "variant": "fake",
+  "kill": "taskkill-f",
+  "hosted": false,
+  "descendantsBefore": [
+    {
+      "name": "node.exe",
+      "pid": 29492,
+      "ppid": 6900
+    },
+    {
+      "name": "node.exe",
+      "pid": 37116,
+      "ppid": 6900
+    },
+    {
+      "name": "node.exe",
+      "pid": 17992,
+      "ppid": 6900
+    },
+    {
+      "name": "node.exe",
+      "pid": 19692,
+      "ppid": 6900
+    },
+    {
+      "name": "node.exe",
+      "pid": 37204,
+      "ppid": 6900
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 31560,
+      "ppid": 37204
+    },
+    {
+      "name": "bash.exe",
+      "pid": 14216,
+      "ppid": 37204
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 24992,
+      "ppid": 14216
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 31972,
+      "ppid": 19692
+    },
+    {
+      "name": "bash.exe",
+      "pid": 22952,
+      "ppid": 19692
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 7696,
+      "ppid": 22952
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 18572,
+      "ppid": 17992
+    },
+    {
+      "name": "bash.exe",
+      "pid": 38308,
+      "ppid": 17992
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 27724,
+      "ppid": 38308
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 32604,
+      "ppid": 37116
+    },
+    {
+      "name": "bash.exe",
+      "pid": 13864,
+      "ppid": 37116
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 34612,
+      "ppid": 13864
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 13540,
+      "ppid": 29492
+    },
+    {
+      "name": "bash.exe",
+      "pid": 29584,
+      "ppid": 29492
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 17300,
+      "ppid": 29584
+    }
+  ],
+  "survivors": [
+    {
+      "name": "conhost.exe",
+      "pid": 31560
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 24992
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 31972
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 7696
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 18572
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 27724
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 32604
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 34612
+    },
+    {
+      "name": "conhost.exe",
+      "pid": 13540
+    },
+    {
+      "name": "sleep.exe",
+      "pid": 17300
+    }
+  ],
+  "daemonAlive": false
+}

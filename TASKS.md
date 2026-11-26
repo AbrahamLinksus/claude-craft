@@ -31,7 +31,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Depends on: —
 - Files: packages/protocol/src/**, packages/daemon/src/main.ts, packages/daemon/src/*/index.ts, packages/daemon/src/domain/**, packages/daemon/src/bus/**, packages/daemon/src/store/**, packages/daemon/src/server/**, packages/daemon/src/log/**, packages/daemon/tests/_support/**, packages/daemon/tests/{protocol,domain,bus,store,server}/**, packages/client/src/main/**, packages/client/src/preload/**, packages/client/src/renderer/app.tsx, packages/client/src/renderer/state/**, packages/client/src/renderer/theme/**, packages/client/src/renderer/input/index.ts, packages/client/src/renderer/screens/startup/**, packages/client/tests/_support/**, packages/client/tests/{link,state}/**, packages/client/tests/e2e/foundation.spec.ts, .env.example
 - Context: SPEC US-01, US-17, US-32 · LLD §0, Frozen after the foundation, §1, §2, §3, §5, §16 · files: package.json, pnpm-workspace.yaml, packages/*/package.json
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] Launching the client starts the daemon detached (if not running), completes the token handshake over `\\.\pipe\craft-<user>` and shows the Startup screen (empty recent-repos list, "o open folder…", hint line) on the mono grid with theme tokens; killing the client leaves the daemon running, and relaunching reconnects (statusline shows "reconnecting" while it retries) (US-17)
   - [ ] Pipe spike on Windows 11: a second daemon start exits 0 ("already running"); a process without the token fails the handshake with `bye UNAUTHORIZED`; `daemon.token` is readable only by the owner (icacls output captured); a malformed or > 1 MB line closes only that connection (G-05)
@@ -45,21 +45,21 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Depends on: —
 - Files: spikes/sdk/**, docs/spikes/sdk.md
 - Context: SPEC US-16, US-19, US-21, US-31, §8 · LLD §0.7, §6, §8.3 · files: spikes/sdk/*
-- Status: Backlog
+- Status: Done
 - Acceptance criteria:
   - [ ] Spike 1: `forkSession` at turn N then `resume` in a different worktree cwd continues from turn N (pass/fail and the chosen §0.7 branch recorded in `docs/spikes/sdk.md`)
   - [ ] Spike 2: a `PreToolUse` hook and a `canUseTool` call each held 10 minutes then allowed proceed, or the hidden timeout is measured and recorded
   - [ ] Spike 3: `rate_limit_event` captured under both sign-in methods; the observed shape (both windows, units, missing fields) saved as fixtures in `spikes/sdk/fixtures/` for the adapter's contract tests
   - [ ] Spike 5: killing the daemon (Task Manager "End task" and `taskkill /F`) with 5 sessions each running a tool child leaves no `claude`/tool processes; the reaper tier (A, B or C) is chosen with evidence
   - [ ] Sign-in: a session starts with the `claude-login` path using the bundled, unmodified binary; the not-signed-in and refused error shapes are recorded and mapped to `AUTH_MISSING`/`AUTH_REJECTED`
-- Result:
+- Result: ⚠️ 4/5 goals (spike 3: no API-key capture, no key on this PC) · forking works, 600 s holds OK, reaper tier B (koffi to approve later), sign-in via unmodified binary · cost not readable
 
 ### T-03 · Spike 4: Electron vs Tauri on Windows 11
 - Owner: frontend-coder, devops
 - Depends on: —
 - Files: spikes/shell/**, docs/spikes/shell.md
 - Context: SPEC §9 (latency), §10 · LLD §0.1, §0.7, §13.4, §17 · files: spikes/shell/*
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] Both shells render 5 replayed streaming transcripts plus a canvas branch graph on the mono grid; keystroke-to-paint p95 and memory are measured on Windows 11 and tabled in `docs/spikes/shell.md`
   - [ ] Electron passes keystroke-to-paint p95 < 50 ms, or the report recommends Tauri with the §0.7 consequence (only `client/src/main/` is rewritten) as an owner decision

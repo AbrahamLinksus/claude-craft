@@ -1,0 +1,52 @@
+{
+  "A": "C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s1-A",
+  "B": "C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s1-B",
+  "t1": {
+    "prompt": "Remember the secret word PINEAPPLE. Reply only with: stored",
+    "cwd": "C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s1-A",
+    "sessionId": "373a4032-6f84-40dd-aecf-4a70eb63bbf1",
+    "text": "stored",
+    "lastAssistantUuid": "12a7dea3-6b5c-4a0b-b240-bd2aa2715560",
+    "isError": false
+  },
+  "t2": {
+    "prompt": "Also remember the secret word ZEBRA. Reply only with: stored",
+    "cwd": "C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s1-A",
+    "resume": "373a4032-6f84-40dd-aecf-4a70eb63bbf1",
+    "sessionId": "373a4032-6f84-40dd-aecf-4a70eb63bbf1",
+    "text": "stored",
+    "lastAssistantUuid": "9744a05a-2ab9-4379-b9a6-91ad3070c6f1",
+    "isError": false
+  },
+  "listed": [
+    {
+      "type": "user",
+      "uuid": "a4593f81-7944-4fd1-8ab5-f4611cf8d443"
+    },
+    {
+      "type": "assistant",
+      "uuid": "12a7dea3-6b5c-4a0b-b240-bd2aa2715560"
+    },
+    {
+      "type": "user",
+      "uuid": "02b5dac1-1a19-4920-89dd-65249156c3f1"
+    },
+    {
+      "type": "assistant",
+      "uuid": "9744a05a-2ab9-4379-b9a6-91ad3070c6f1"
+    }
+  ],
+  "cutUuid": "12a7dea3-6b5c-4a0b-b240-bd2aa2715560",
+  "fork": {
+    "sessionId": "9013eff2-2482-47b1-9bc0-866d65e8c6ff"
+  },
+  "resumeOtherCwd": {
+    "prompt": "List every secret word I asked you to remember, comma separated, nothing else. If none, say NONE.",
+    "cwd": "C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s1-B",
+    "resume": "9013eff2-2482-47b1-9bc0-866d65e8c6ff",
+    "sessionId": "9013eff2-2482-47b1-9bc0-866d65e8c6ff",
+    "text": "PINEAPPLE",
+    "lastAssistantUuid": "a9a77480-6942-4de2-aaab-e6471650c296",
+    "isError": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "mode": "can",
+  "holdS": 600,
+  "ev": [
+    "1.7s canUseTool entered for Bash, holding",
+    "601.7s canUseTool allowing",
+    "601.9s msg user ",
+    "606.8s msg result success"
+  ],
+  "toolResults": [
+    {
+      "tool_use_id": "toolu_01SFbqdMLPZGgTeA24vLJBT8",
+      "type": "tool_result",
+      "content": "SPIKE2_OK\nShell cwd was reset to C:\\Users\\<user>\\AppData\\Local\\Temp\\claude\\1354f74c3c508f23\\2b066bef-e7bc-4b57-a46a-136c62d3b631\\scratchpad\\s2-can",
+      "is_error": false
+    }
+  ],
+  "isError": false,
+  "resultSubtype": "success",
+  "pass": true,
+  "totalS": "607.4"
+}
