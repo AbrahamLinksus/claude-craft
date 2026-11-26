@@ -25,6 +25,7 @@ daemon/main.ts (composition root) ─► daemon modules ─► other modules' in
 - `daemon/src/domain/` is pure: no `node:*`, no I/O, no clock reads.
 - A daemon module imports another module only through its `index.ts`; concrete classes are created only in `main.ts`.
 - The client never imports daemon or graft-api code; the renderer never imports `node:*` or `electron`.
+- Another package is imported only by its name (`@craft/protocol`, `@craft/graft-api`, `@craft/graft-ui`), never by a relative path into its folder (`../../protocol/src/...`) and never by a deep path (`@craft/protocol/src/wire.ts`). The importing package lists it in its own `package.json` as `"workspace:*"` (adding it is env-setup's job, as it changes the lockfile). Within a package, relative imports with the `.ts` extension stay as they are (LLD §0.2).
 - These are enforced by dependency-cruiser with the exact rules in LLD §0.3; a violation fails `scripts/check.sh`.
 
 ## 3. SOLID: what it means in this project

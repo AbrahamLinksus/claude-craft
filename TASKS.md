@@ -5,7 +5,7 @@ Status: Backlog → In progress → Review → Needs you → Done
 A task is one user-visible feature slice end to end (data, logic, UI, tests), never one layer.
 Only the first task may be a foundation task (the app starts and shows its first screen; shared
 helpers). Caps by size: small 8, medium 15, large 30; an extra task carries `Why separate:`.
-Size: large (cap 30) · 30 tasks · 12 milestones (owner-approved, D-05; checkpoints ★ at M1, M2, M3, M12).
+Size: large (cap 30) · 34 tasks (4 Done, 30 open) · 12 milestones (owner-approved, D-05; checkpoints ★ at M1, M2, M3, M12). CR-1 (D-25) added T-01b, T-01c, T-01d to M2; T-01c and T-01d carry `Why separate:`.
 
 Every task needs `Owner:`, `Depends on:` (real data or interface dependencies only, never a
 preferred order; `—` for none) and `Files:` (paths or globs it will create or change): the build
@@ -17,9 +17,9 @@ scope guard enforces it). `Frozen:` lists the shared code the foundation builds;
 task that claims a frozen path itself may change it. Work that touches every feature is one
 wire-up task at the end, not an edit inside each feature.
 
-Frozen: packages/protocol/src/**, packages/graft-api/src/**, packages/graft-ui/src/**, packages/daemon/src/main.ts, packages/daemon/src/domain/**, packages/daemon/src/bus/**, packages/daemon/src/store/**, packages/daemon/src/server/**, packages/daemon/src/log/**, packages/daemon/src/prompts/**, packages/daemon/src/grafts/**, packages/client/src/main/**, packages/client/src/preload/**, packages/client/src/renderer/app.tsx, packages/client/src/renderer/state/**, packages/client/src/renderer/theme/**, packages/client/src/renderer/shell/**, packages/client/src/renderer/panels/host.tsx, packages/daemon/tests/_support/**, packages/client/tests/_support/**, tools/replay/**, tsconfig*.json, eslint.config.js, .dependency-cruiser.cjs, vitest.config.ts, playwright.config.ts, scripts/check.sh, tools/perf/budgets.json
+Frozen: packages/protocol/src/**, packages/graft-api/src/**, packages/graft-ui/src/**, packages/daemon/src/main.ts, packages/daemon/src/domain/**, packages/daemon/src/bus/**, packages/daemon/src/store/**, packages/daemon/src/server/**, packages/daemon/src/log/**, packages/daemon/src/prompts/**, packages/daemon/src/grafts/**, packages/client/src/main/**, packages/client/src/preload/**, packages/client/src/renderer/app.tsx, packages/client/src/renderer/state/**, packages/client/src/renderer/theme/**, packages/client/src/renderer/shell/**, packages/client/src/renderer/panels/host.tsx, packages/daemon/tests/_support/**, packages/client/tests/_support/**, tools/replay/**, tsconfig*.json, eslint.config.js, .dependency-cruiser.cjs, vitest.config.ts, playwright.config.ts, scripts/check.sh, scripts/setup-tools.sh, tools/perf/budgets.json
 
-Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04, T-05, T-06 (each claims its frozen part); T-28 is the hardening shared-code task that claims `tools/replay/**` and `tools/perf/budgets.json`. No feature task (M3 onwards) claims a frozen path. Registries are one file per entry (graft = folder, screen = folder, core `:` command = `packages/daemon/src/grammar/commands/<name>.ts`), so features add files instead of editing shared ones.
+Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04, T-05, T-06 (each claims its frozen part); the CR-1 tasks T-01b and T-01c claim the frozen files CR-1 reopens (LLD "Frozen after the foundation", CR-1 bullet), which are frozen again when they are Done; T-28 is the hardening shared-code task that claims `tools/replay/**` and `tools/perf/budgets.json`. No feature task (M3 onwards) claims a frozen path. Registries are one file per entry (graft = folder, screen = folder, core `:` command = `packages/daemon/src/grammar/commands/<name>.ts`), so features add files instead of editing shared ones.
 
 `Context:` lists exactly what the task's agents need to read: spec stories, LLD sections
 (by number) and file globs. The Orchestrator builds every brief's `Read:` field from it.
@@ -79,9 +79,51 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
   - [ ] The build output folder `out` is in `options.exclude`; `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes on main
 - Result: ✅ 2/2 · client launcher may spawn the daemon; `out` excluded · review 0 findings · checks pass
 
+### T-01b · CR-1: packages import the protocol by name (workspace deps, codemod, layer rules)
+- Owner: env-setup, backend-coder, frontend-coder (env-setup first: package files, lockfile, rules; then backend-coder runs the import codemod over daemon, graft-api and graft-ui, frontend-coder over client)
+- Depends on: —
+- Files: packages/protocol/package.json, packages/daemon/package.json, packages/client/package.json, packages/graft-api/package.json, packages/graft-ui/package.json, pnpm-lock.yaml, .dependency-cruiser.cjs, packages/daemon/src/**, packages/daemon/tests/**, packages/client/src/**, packages/client/tests/**, packages/graft-api/src/**, packages/graft-ui/src/**
+- Context: LLD §0.2 (Workspace imports), §0.3 (rules `no-relative-cross-package`, `workspace-dep-declared`), Frozen after the foundation (CR-1 bullet) · CONVENTIONS §2 · files: package.json, pnpm-workspace.yaml, packages/*/package.json, .dependency-cruiser.cjs
+- Status: Backlog
+- Acceptance criteria:
+  - [ ] `packages/protocol/package.json` has `"exports": {".": "./src/index.ts"}` and keeps `main`; daemon, client, graft-api and graft-ui list `"@craft/protocol": "workspace:*"` in `dependencies`; `pnpm install --frozen-lockfile` succeeds on a clean clone and `packages/<each>/node_modules/@craft/protocol` links to `packages/protocol`
+  - [ ] A search for `protocol/src/index.ts` under `packages/` finds no import (was 66 sites); every one now reads `from "@craft/protocol"`, and `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes with every test that passed before still passing (none removed or skipped)
+  - [ ] A scratch file in `packages/client/src/main/` importing `../../../protocol/src/index.ts` makes the layer check fail naming `no-relative-cross-package`; a scratch daemon file importing `@craft/graft-ui` (not in its `package.json`) fails naming `workspace-dep-declared`; both scratch files are removed and the output is saved in `.results/T-01b/`
+  - [ ] Craft still opens: the foundation end-to-end test passes (Startup screen shown, daemon started and connected)
+- Result:
+
+### T-01c · CR-1: snapshot seq, one daemon address, strict handshake nonces
+- Owner: backend-coder, frontend-coder (backend-coder: protocol `wire.ts`/`address.ts`, daemon `takeSnapshot` and `main.ts`; then frontend-coder: client `link.ts`, `config.ts`)
+- Depends on: T-01b
+- Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**
+- Context: SPEC US-17 · LLD §1.3, §1.5, §2.1, §2.3, §2.4, §3 · files: packages/protocol/src/{wire,index}.ts, packages/daemon/src/server/*, packages/daemon/src/main.ts, packages/client/src/main/{link,config}.ts
+- Why separate: the T-01b import change must land first (bare-name imports must resolve before this code uses them), and splitting lets T-01d, T-06, T-07 and T-08 start right after T-01b while this runs
+- Status: Backlog
+- Acceptance criteria:
+  - [ ] `snapshot.get` and the handshake both reply `{seq, state}` built by `takeSnapshot`; a test that calls `snapshot.get` right after `bus.publish` returns (no await between) gets `seq` equal to that event's seq and a `state` that already contains its effect (snapshot read is current before `bus.publish` returns); no event with seq > the reply's `seq` reaches the socket before the reply (US-17)
+  - [ ] Client link: after a `resync`, an event the link already applied (seq ≤ the reply's `seq`) is dropped, so it applies once; two `resync`s before a reply never move `lastSeq` back; a reconnect while the resync is unanswered sends `auth` without `resume` and receives a full snapshot; an error reply or a bare `Snapshot` body closes the socket and the reconnect brings a full snapshot (US-17)
+  - [ ] `daemonAddress` gives `\\.\pipe\craft-jake` on win32 for user `jake`, `\\.\pipe\mypipe` for override `mypipe`, `<home>/daemon.sock` elsewhere; the client and daemon both call it (the `transport.ts` copy is gone), and a `CRAFT_PIPE` set only in the daemon's injected env (not `process.env`) is the pipe it listens on and the client connects to
+  - [ ] A `hello` whose `clientNonce` is 43 or 45 characters is refused and that connection closed while the daemon keeps running; the client refuses a `challenge` whose `serverNonce` is not 44 characters
+  - [ ] A daemon whose `daemonVersion` differs from the client's shows the Notice "Craft was updated: restart the background worker (sessions pause as cryo)"; equal versions show nothing; the foundation end-to-end test still passes
+- Result:
+
+### T-01d · One-command start: `pnpm start` opens Craft
+- Owner: env-setup, docs (env-setup: the start script and build configs, and checking it opens Craft on Windows 11; docs: the README line)
+- Depends on: T-01b
+- Files: package.json, README.md, packages/client/package.json, packages/daemon/package.json, packages/client/vite*.config.ts, packages/daemon/vite.config.ts, scripts/start.*
+- Context: SPEC US-17 · LLD §0.2 (Workspace imports: Electron and daemon rows), §2.3 (Launch) · files: package.json, packages/{client,daemon}/package.json, README.md
+- Why separate: owner asked for it early (no start command exists yet); different owners (env-setup, docs) and different files from T-01c, so it runs alongside it
+- Status: Backlog
+- Acceptance criteria:
+  - [ ] On a fresh clone on Windows 11, `pnpm install` then `pnpm start` builds the daemon and client and opens Craft on the Startup screen; the daemon was started by the client (`~/.craft/daemon.json` holds its pid) (screenshot)
+  - [ ] Closing the window leaves the daemon running; a second `pnpm start` reconnects to it and starts no second daemon
+  - [ ] A build error stops `pnpm start` with that error shown and no window opened
+  - [ ] README has a "Run it" line (`pnpm install`, then `pnpm start`) in place of the "no start script yet" note
+- Result:
+
 ### T-04 · Command plumbing: grammar registry, prompt queue, undo journal
 - Owner: backend-coder
-- Depends on: T-01
+- Depends on: T-01, T-01c
 - Files: packages/daemon/src/grammar/**, packages/daemon/src/prompts/**, packages/daemon/src/undo/**, packages/daemon/tests/{grammar,prompts,undo}/**
 - Context: SPEC US-04, US-05, US-08, US-30, US-34 · LLD §9, §10, §16.1 · files: packages/protocol/src/*, packages/daemon/src/main.ts
 - Status: Backlog
@@ -94,7 +136,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 
 ### T-05 · Graft host, graft API v1, sample graft and architecture checks in CI
 - Owner: backend-coder, devops
-- Depends on: T-04
+- Depends on: T-01b, T-04
 - Files: packages/graft-api/src/**, packages/daemon/src/grafts/**, packages/daemon/tests/_support/test-graft-host.ts, packages/daemon/tests/grafts/**, grafts/sample-hello/**, tools/check-graft/**, .dependency-cruiser.cjs, .github/workflows/ci.yml
 - Context: SPEC US-24, US-29, US-30 · LLD §0.3, §11, §15.10, §17 · files: packages/protocol/src/*, packages/daemon/src/grammar/index.ts, packages/daemon/src/prompts/index.ts
 - Status: Backlog
@@ -108,7 +150,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 
 ### T-06 · Client shell: top bar, statusline, tabs, prompt overlay, which-key and panel host
 - Owner: frontend-coder
-- Depends on: T-01
+- Depends on: T-01, T-01b
 - Files: packages/graft-ui/src/**, packages/client/src/renderer/shell/**, packages/client/src/renderer/panels/host.tsx, packages/client/tests/shell/**
 - Context: SPEC US-05, US-08, US-11, US-14, US-15, US-30, §7 · LLD §13.2, §13.4, §13.5, §14 · files: packages/client/src/renderer/{app.tsx,state/*,theme/*}, packages/protocol/src/*
 - Status: Backlog
@@ -122,7 +164,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 
 ### T-07 · AgentPort, SDK adapter and process reaper
 - Owner: agent-engineer
-- Depends on: T-01, T-02
+- Depends on: T-01, T-01b, T-02
 - Files: packages/daemon/src/agent/**, packages/daemon/src/process/**, packages/daemon/tests/{agent,process}/**, packages/daemon/tests/fixtures/sdk/**
 - Context: SPEC US-02, US-16, US-18, §8 · LLD §6.1, §6.2, §6.4, §0.7 · files: docs/spikes/sdk.md, spikes/sdk/fixtures/*, packages/protocol/src/*
 - Status: Backlog
@@ -135,7 +177,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 
 ### T-08 · Event log: per-session history files, redaction and 50 MB parts
 - Owner: backend-coder
-- Depends on: T-01
+- Depends on: T-01, T-01b
 - Files: packages/daemon/src/eventlog/**, packages/daemon/tests/eventlog/**
 - Context: SPEC US-17, US-21, US-28, US-33, §6, §13 · LLD §4, §1.1, §1.2 · files: packages/daemon/src/domain/redact.ts, packages/protocol/src/*
 - Status: Backlog

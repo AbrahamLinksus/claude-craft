@@ -31,7 +31,7 @@ claude-craft/
   package.json  pnpm-workspace.yaml  tsconfig.base.json  eslint.config.js  .prettierrc.json
   .dependency-cruiser.cjs  vitest.config.ts  playwright.config.ts  scripts/check.sh  scripts/setup-tools.sh  .env.example
   packages/
-    protocol/src/        wire.ts events.ts errors.ts ids.ts settings.ts version.ts index.ts      (§1)
+    protocol/src/        wire.ts events.ts errors.ts ids.ts settings.ts version.ts address.ts index.ts (§1)
     graft-api/src/       manifest.ts capabilities.ts context.ts ports.ts define.ts index.ts      (§11)
     graft-ui/src/        panel.ts theme.ts grid/*.tsx index.ts                                  (§14)
     daemon/src/
@@ -52,6 +52,14 @@ claude-craft/
   tools/
     replay/  check-graft/  perf/ (budgets.json + bench)  soak/                     (§17)
 ```
+**Workspace imports (CR-1).** Each library package (`@craft/protocol`, `@craft/graft-api`, `@craft/graft-ui`) has `"main"` and `"exports": {".": "./src/index.ts"}` (TS source, no build step; `exports` blocks deep paths). Every package that imports one lists it as `"@craft/<name>": "workspace:*"` in its own `package.json` and imports the bare name (`from "@craft/protocol"`). Now: daemon, client, graft-api, graft-ui → protocol; each graft/tool adds its own when first created. pnpm links `node_modules/@craft/<name>` → `packages/<name>`.
+| Consumer | How `@craft/protocol` resolves |
+|---|---|
+| tsc (`moduleResolution: Bundler`, `allowImportingTsExtensions`) | symlink → `exports` → `packages/protocol/src/index.ts`; one program, no `.d.ts` |
+| vitest (root `vitest.config.ts`) | Vite follows the symlink to its real path (outside `node_modules`), so the source is transformed inline and is the same module instance as before; no alias needed |
+| Electron main / preload / renderer (Vite builds) | bundled from source; main/preload builds keep `@craft/*` in `ssr.noExternal` (`/^@craft\//`); type-only imports are erased (sandboxed preload stays self-contained) |
+| Daemon at runtime | never resolves the name: the launcher (§2.3) runs the Vite bundle `daemon/dist/main.js` with protocol inlined; electron-builder ships only `dist/` |
+| dependency-cruiser | resolves to the real path (`preserveSymlinks: false`, the default), so §0.3 rules keyed on `^packages/protocol/` still match |
 
 ### §0.3 Layer map, dependency rules, composition root
 ```
@@ -79,6 +87,8 @@ dependency-cruiser `forbidden` rules (all `severity: error`; in `.dependency-cru
 | `protocol-leaf` | `^packages/protocol/` | anything except `zod` |
 | `graft-api-leaf` | `^packages/graft-(api\|ui)/` | `^packages/(daemon\|client)/`, `^grafts/` |
 | `no-circular` | any | circular |
+| `no-relative-cross-package` (CR-1) | `^(packages\|grafts\|tools)/([^/]+)/` | `dependencyTypes: ['local']` into `^(packages\|grafts\|tools)/` other than `$1/$2/` (import another package by name) |
+| `workspace-dep-declared` (CR-1) | any | `dependencyTypes: ['npm-no-pkg', 'npm-unknown']` (`@craft/*` used but not in that package's `package.json`) |
 
 ### §0.4 Packages
 Pins checked 2026-11-25 (research §4). "pin at install" = exact version written to the lockfile by env-setup, no range.
@@ -166,6 +176,7 @@ The foundation tasks (M1–M2) build these complete; feature tasks never edit th
 - `packages/client/src/main/**`, `preload/**`, `renderer/app.tsx`, `renderer/state/**`, `renderer/theme/**`, `renderer/shell/**`, `renderer/panels/host.tsx` (screens found by `import.meta.glob('./screens/*/index.tsx')`, graft UIs by `glob('/grafts/*/ui/index.tsx')`)
 - Test support: `packages/daemon/tests/_support/**`, `packages/client/tests/_support/**`, `tools/replay/**`
 - Root configs (gates; env-setup owns them): `tsconfig*.json`, `eslint.config.js`, `.dependency-cruiser.cjs`, `vitest.config.ts` (root; replaces `vitest.workspace.ts`), `playwright.config.ts`, `scripts/check.sh`, `scripts/setup-tools.sh`, `tools/perf/budgets.json`
+- CR-1 (D-25) is the change request that reopens: `packages/protocol/src/{wire,address,index}.ts`, `packages/*/package.json` (`workspace:*` deps, `exports`), every file with a relative protocol import (codemod), `daemon/src/main.ts`, `server/{commands,connection,transport,snapshot}.ts`, `client/src/main/{link,config}.ts`, `.dependency-cruiser.cjs` (env-setup), `pnpm-lock.yaml` (env-setup). Frozen again when CR-1 merges.
 - Registries are one file per entry: graft = folder; screen = folder; core `:` commands = `packages/daemon/src/grammar/commands/<name>.ts` (glob); store migrations = `store/migrations/<file>-<from>-<to>.ts` (glob); tests per feature folder.
 
 ## §1 Protocol (`packages/protocol`)
@@ -213,10 +224,10 @@ Critical = never dropped by the bus (§3) or stream batching (§2). Logged = wri
 ### §1.3 Wire messages (NDJSON, one JSON object per line, ≤ 1 MB per line)
 | Dir | type | fields |
 |---|---|---|
-| C→D | `hello` | `protocol, clientVersion, clientNonce` (32 B base64) |
-| D→C | `challenge` | `daemonVersion, epoch, serverNonce, proof = HMAC(token, "daemon:"+clientNonce)` |
+| C→D | `hello` | `protocol, clientVersion, clientNonce` (32 B base64 = exactly 44 chars, zod `length(44)`) |
+| D→C | `challenge` | `daemonVersion, epoch, serverNonce` (32 B base64, `length(44)`), `proof = HMAC(token, "daemon:"+clientNonce)` |
 | C→D | `auth` | `proof = HMAC(token, "client:"+serverNonce), resume?: {epoch, lastSeq}` |
-| D→C | `snapshot` | `seq, state: Snapshot` |
+| D→C | `snapshot` | `SnapshotReply` fields: `seq, state: Snapshot` |
 | D→C | `events` | `items: StreamEvent[]` (ascending seq, batched ≤ 30/s) |
 | D→C | `resync` | `{}` — client must send `cmd snapshot.get` |
 | C→D | `cmd` | `id, name: CommandName, args` |
@@ -226,8 +237,17 @@ Critical = never dropped by the bus (§3) or stream batching (§2). Logged = wri
 
 `CommandName` (args validated by zod in protocol): `snapshot.get`, `repo.list`, `repo.open {path}`, `repo.forget {repoKey}`, `session.create {repoId, prompt, model?}`, `session.prompt {sid, text}`, `sentence.run {count, verb, object?, target?: Target}`, `command.run {name, args?}`, `prompt.answer {promptId, key}`, `panel.action {graft, panel, action}`, `settings.set {path, value}`, `signin.setMethod {method}`, `signin.setApiKey {key}`, `signin.openClaudeLogin {}`, `graft.setDose {name, dose}`, `graft.install {name}`, `graft.remove {name}`, `graft.acceptLeaflet {name}`, `daemon.restart {}`. `Target = {sid?, branch?, attempt?, panel?, selection?}`.
 
+**`snapshot.get` reply (CR-1):** `data: SnapshotReply`, with `snapshotReplySchema = z.object({seq: z.number().int().nonnegative(), state: snapshotSchema})` exported from `wire.ts`; the wire `snapshot` message is the same schema plus `type`. `seq` is **required**: the highest event seq whose effects `state` contains (no later ones). Additive to the message set, but it changes the reply body (was a bare `Snapshot`); `PROTOCOL_VERSION` stays 1 because nothing has shipped. From the first release on, any change to a reply body bumps `PROTOCOL_VERSION`.
+
 ### §1.4 Error codes (`errors.ts`)
 `ErrorCode` union + `CraftError extends Error {code, userMessage, details?}`. User messages are fixed templates in §16.1.
+
+### §1.5 Daemon address (`address.ts`, CR-1)
+```ts
+export interface AddressInput { platform: string; username: string; home: string; override?: string | undefined }  // override = CRAFT_PIPE
+export function daemonAddress(i: AddressInput): string
+```
+Pure (no `node:*`, `protocol-leaf`). Override set: on `win32` prefix `\\.\pipe\` if missing, else as given. No override: `win32` → `\\.\pipe\craft-<username>`; else `<home without trailing />/daemon.sock`. The only implementation: daemon `main.ts` and client `main/config.ts` both call it (callers pass the injected env's `CRAFT_PIPE`, platform, username, `CRAFT_HOME`-resolved home); `server/transport.ts` `defaultAddress` is deleted.
 
 ## §2 Connection (daemon `server/` [C8] + client `main/link.ts`)
 - **Responsibility:** Authenticated pipe connection, snapshot + sequenced batched stream, command intake, reconnect catch-up.
@@ -240,6 +260,7 @@ interface Transport { listen(onConn: (s: Duplex) => void): Promise<void>; addres
 interface CommandHandler<N extends CommandName> { name: N; run(args: CommandArgs<N>, ctx: CmdCtx): Promise<unknown> }
 class ConnectionServer { constructor(t: Transport, bus: Bus, snapshot: () => Snapshot, cmds: CommandRouter, token: TokenFile); start(): Promise<void> }
 class StreamRing { push(e: StreamEvent): void; since(seq: number): StreamEvent[] | 'gone' }  // 20 000 events
+function takeSnapshot(bus: Pick<Bus, 'lastSeq'>, read: () => Snapshot): SnapshotReply  // server/snapshot.ts (CR-1): handshake + snapshot.get
 // client main
 class DaemonLink extends EventEmitter { connect(): Promise<void>; send(cmd): Promise<Reply>; close(): void }  // emits 'snapshot','events','state'
 class DaemonLauncher { ensureRunning(): Promise<void> }
@@ -276,7 +297,8 @@ sequenceDiagram
 ```
 
 ### §2.3 Contracts and rules
-- **Pipe name:** `\\.\pipe\craft-<username>`; non-Windows `~/.craft/daemon.sock`. Override `CRAFT_PIPE`.
+- **Pipe name:** `\\.\pipe\craft-<username>`; non-Windows `~/.craft/daemon.sock`. Override `CRAFT_PIPE`. Both sides compute it with §1.5 `daemonAddress()`.
+- **Snapshot seq (CR-1):** the daemon builds every snapshot (handshake and `snapshot.get`) with `takeSnapshot`, reading `bus.lastSeq()` and the state in one synchronous step (no `await` between), so `seq` matches `state`. Events with seq > `seq` are written to the socket only after the reply (the feed flushes on a later timer tick). Client `DaemonLink`: on `resync`, set `needsSnapshot = true` and send `snapshot.get`; on an ok reply, `lastSeq = max(lastSeq, reply.seq)`, emit `snapshot {seq: reply.seq}`, clear `needsSnapshot`; `events` items with `seq ≤ lastSeq` are dropped before emitting (none left → no emit). While `needsSnapshot`, a reconnect sends `auth` **without** `resume`, so the daemon answers with a full snapshot. A late window (`ready`, `snapshotNow`) gets `{seq: reply.seq, state}` but does **not** move the link's `lastSeq`; the renderer store already ignores events with seq ≤ its snapshot seq (§13.2).
 - **Token:** daemon writes 32 random bytes (hex) to `~/.craft/daemon.token` at every start (write-file-atomic, mode 0600; on Windows, first run also runs `icacls <file> /inheritance:r /grant:r <user>:F` via §6.4's command runner; failure → warn). HMAC-SHA256, `crypto.timingSafeEqual`. Handshake must finish in 5 s or `bye UNAUTHORIZED`. Both sides prove the token, so a process squatting on the pipe name can't impersonate the daemon.
 - **Single instance:** `listen` EADDRINUSE → daemon connects as a client; handshake OK → exit 0 (already running); handshake fails → write `~/.craft/logs` error `PIPE_TAKEN` and exit 3 (client shows "Another program is using Craft's connection name").
 - **Launch:** `DaemonLauncher` spawns `process.execPath` with `ELECTRON_RUN_AS_NODE=1` (dev: `node`) on `daemon/dist/main.js`, `detached: true, windowsHide: true, stdio: 'ignore'`, `unref()`; then retries connect up to 10 s. `~/.craft/daemon.json` = `{pid, version, epoch, startedAt}`.
@@ -288,6 +310,7 @@ sequenceDiagram
 - Daemon restart while client open → new epoch → snapshot. Client killed → daemon unaffected (sessions keep running).
 - Malformed line or line > 1 MB → `bye PROTOCOL_ERROR`, connection closed, daemon keeps running.
 - Several clients (two windows) are allowed; each gets its own stream; prompt answers are first-wins.
+- Resync `snapshot.get` fails (error reply, bad body, or old daemon replying a bare `Snapshot`) → destroy the socket; with `needsSnapshot` still set, the reconnect gets a full snapshot. Two `resync`s before a reply → each reply applies; `max` keeps `lastSeq` from going back. Invariant to test: whatever `Snapshot` reads is updated before `bus.publish` returns (a projection fed by a queued subscriber would lag `lastSeq` and lose events).
 
 ## §3 Event bus (`daemon/src/bus/`) [C3]
 - **Responsibility:** Typed pub/sub across all sessions; bounded per-subscriber queues; critical events never dropped.
@@ -848,4 +871,8 @@ Each graft: `graft.json` (§11.1), `daemon/index.ts` (`defineGraft`), `ui/index.
 | M1 | §2.3, §13.1, §0.6 | Preload uses `ipcRenderer` (not `MessagePort`); adds `ready`, `pickFolder`, `log`; sender-frame check per call; window locked to app page | as built T-01 | — |
 | M1 | §6.4, §10.4 | `spawn(opts: SpawnOptions)` shape written out; `UndoResult = RunResult` (carries code) | as built T-01 | — |
 | M1 | Frozen, §0.2 | `vitest.workspace.ts` → root `vitest.config.ts`; `scripts/setup-tools.sh` added | env step | — |
-| M1 | open (not decided) | Relative `@craft/protocol` imports (workspace deps + codemod) and stale `lastSeq` after `resync` (§2.2) are pending change requests for the owner | STATE Known minors | — |
+| M1 | open → decided | Relative `@craft/protocol` imports (workspace deps + codemod) and stale `lastSeq` after `resync` (§2.2) were pending; decided as CR-1 below | STATE Known minors | D-25 |
+| CR-1 | §0.2, §0.3, CONVENTIONS §2 | Packages import each other by name via `workspace:*` deps and `exports`; codemod replaces every `../../protocol/src/index.ts` import; depcruise adds `no-relative-cross-package`, `workspace-dep-declared` (env-setup) | relative paths break when files move and bypass the public API | D-25 |
+| CR-1 | §1.3, §2.1, §2.3, §2.4 | `snapshot.get` reply = `SnapshotReply {seq, state}` (seq required); daemon `takeSnapshot` for both snapshot paths; link sets `lastSeq` from the reply, drops events ≤ `lastSeq`, reconnects without `resume` while a resync is unanswered | link used its stale `lastSeq` after `resync`, so events could apply twice or a reconnect could skip the gap | D-25 |
+| CR-1 | §1.5 (new), §2.3 | `daemonAddress()` moved into protocol; client `config.ts` and daemon `transport.ts` copies removed; daemon passes injected env `CRAFT_PIPE` | two copies of one contract (T-01 minors config.ts:30, main.ts:183) | D-25 (fold-in) |
+| CR-1 | §1.3 | `clientNonce` and `serverNonce` validated as `length(44)` | 32 B base64 is always 44 chars (T-01 minor wire.ts:15) | D-25 (fold-in) |
