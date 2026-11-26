@@ -17,11 +17,7 @@ export function PromptOverlay(props: PromptOverlayProps): ReactNode {
   const { prompt } = props;
   if (prompt === undefined) return null;
   return (
-    <div
-      role="dialog"
-      aria-label="prompt"
-      style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 10 }}
-    >
+    <div role="dialog" aria-label="prompt">
       <Frame tone="accent" maxCols={OVERLAY_COLS}>
         <Text>
           <Span tone="accent" bold>

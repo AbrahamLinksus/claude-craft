@@ -34,7 +34,8 @@ export function Shell(props: ShellProps): ReactNode {
         <SessionTabs sessions={m.sessions} focused={m.focused?.sid ?? ""} />
       ) : null}
       <div style={{ flex: 1, minHeight: 0, overflowY: "auto" }}>{props.children}</div>
-      <WhichKey parse={props.parse} />
+      {m.prompt === undefined ? <WhichKey parse={props.parse} /> : null}
+      <PromptOverlay prompt={m.prompt} session={m.promptSession} />
       <Statusline
         mode={props.mode}
         counts={m.counts}
@@ -43,7 +44,6 @@ export function Shell(props: ShellProps): ReactNode {
         session={session}
         branch={props.branch}
       />
-      <PromptOverlay prompt={m.prompt} session={m.promptSession} />
     </div>
   );
 }

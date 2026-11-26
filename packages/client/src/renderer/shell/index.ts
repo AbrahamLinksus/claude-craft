@@ -8,3 +8,4 @@ export { SessionTabs } from "./session-tabs.tsx";
 export { PromptOverlay } from "./prompt-overlay.tsx";
 export { WhichKey } from "./which-key.tsx";
 export * from "./model.ts";
+export type { PanelProps, WidgetProps } from "@craft/graft-ui";

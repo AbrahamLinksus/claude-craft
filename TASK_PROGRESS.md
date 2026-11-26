@@ -7,7 +7,7 @@ Owner: frontend-coder · Started: 2026-11-26 14:41 +05:30
 | 2 Tests + review | tester, reviewer | ⬜ | |
 | 3 Sync | runner | ⬜ | |
 | 4 Card | runner | ⬜ | |
-| implement-wire |  | ⏳ |  |
+| implement-wire |  | ✅ | Shell mounted in app.tsx; overlay above statusline; checks pass |
 
 Agents: task-runner
 Debugger rounds: 0/2
