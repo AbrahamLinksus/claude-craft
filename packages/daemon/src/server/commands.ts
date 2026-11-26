@@ -1,4 +1,4 @@
-import type { AnyCommandHandler, Snapshot } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, Snapshot } from "@craft/protocol";
 
 export interface ServerCommandDeps {
   snapshot: () => Snapshot;

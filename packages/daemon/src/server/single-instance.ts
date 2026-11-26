@@ -7,7 +7,7 @@ import {
   proofFor,
   proofsEqual,
   randomNonce,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Clock } from "../domain/index.ts";
 import { LineReader } from "./line-reader.ts";
 import type { TokenFile } from "./token-file.ts";

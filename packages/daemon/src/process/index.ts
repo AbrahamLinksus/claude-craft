@@ -1,9 +1,5 @@
 import type { ChildProcess } from "node:child_process";
-import {
-  CraftError,
-  type AnyCommandHandler,
-  type SessionKey,
-} from "../../../protocol/src/index.ts";
+import { CraftError, type AnyCommandHandler, type SessionKey } from "@craft/protocol";
 
 export {
   OwnerOnlyAcl,

@@ -4,7 +4,7 @@ import {
   type ErrorCode,
   type OpenPrompt,
   type SessionKey,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Bus } from "../bus/index.ts";
 import { notBuilt } from "../domain/index.ts";
 

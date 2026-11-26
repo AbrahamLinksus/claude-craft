@@ -1,4 +1,4 @@
-import { CraftError } from "../../../protocol/src/index.ts";
+import { CraftError } from "@craft/protocol";
 
 /**
  * A placeholder for a module that a later task builds: every method throws a `CraftError`

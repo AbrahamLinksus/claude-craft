@@ -1,4 +1,4 @@
-import type { AnyCommandHandler } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler } from "@craft/protocol";
 import { notBuilt } from "../domain/index.ts";
 
 export interface StatusSummary {

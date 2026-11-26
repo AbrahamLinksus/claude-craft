@@ -84,13 +84,13 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Depends on: —
 - Files: packages/protocol/package.json, packages/daemon/package.json, packages/client/package.json, packages/graft-api/package.json, packages/graft-ui/package.json, pnpm-lock.yaml, .dependency-cruiser.cjs, packages/daemon/src/**, packages/daemon/tests/**, packages/client/src/**, packages/client/tests/**, packages/graft-api/src/**, packages/graft-ui/src/**
 - Context: LLD §0.2 (Workspace imports), §0.3 (rules `no-relative-cross-package`, `workspace-dep-declared`), Frozen after the foundation (CR-1 bullet) · CONVENTIONS §2 · files: package.json, pnpm-workspace.yaml, packages/*/package.json, .dependency-cruiser.cjs
-- Status: Backlog
+- Status: Done
 - Acceptance criteria:
   - [ ] `packages/protocol/package.json` has `"exports": {".": "./src/index.ts"}` and keeps `main`; daemon, client, graft-api and graft-ui list `"@craft/protocol": "workspace:*"` in `dependencies`; `pnpm install --frozen-lockfile` succeeds on a clean clone and `packages/<each>/node_modules/@craft/protocol` links to `packages/protocol`
   - [ ] A search for `protocol/src/index.ts` under `packages/` finds no import (was 66 sites); every one now reads `from "@craft/protocol"`, and `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes with every test that passed before still passing (none removed or skipped)
   - [ ] A scratch file in `packages/client/src/main/` importing `../../../protocol/src/index.ts` makes the layer check fail naming `no-relative-cross-package`; a scratch daemon file importing `@craft/graft-ui` (not in its `package.json`) fails naming `workspace-dep-declared`; both scratch files are removed and the output is saved in `.results/T-01b/`
   - [ ] Craft still opens: the foundation end-to-end test passes (Startup screen shown, daemon started and connected)
-- Result:
+- Result: ✅ 4/4 · 66 relative imports → @craft/protocol, 2 layer rules, clean install verified, e2e 3/3 · review 0 major, 2/3 minors fixed · cost not readable
 
 ### T-01c · CR-1: snapshot seq, one daemon address, strict handshake nonces
 - Owner: backend-coder, frontend-coder (backend-coder: protocol `wire.ts`/`address.ts`, daemon `takeSnapshot` and `main.ts`; then frontend-coder: client `link.ts`, `config.ts`)

@@ -1,7 +1,7 @@
 import { userInfo } from "node:os";
 import { join } from "node:path";
 import { app, BrowserWindow, dialog, ipcMain } from "electron";
-import { CRAFT_VERSION } from "../../../protocol/src/index.ts";
+import { CRAFT_VERSION } from "@craft/protocol";
 import { registerBridge } from "./bridge.ts";
 import { fileClientLog } from "./client-log.ts";
 import { loadMainConfig } from "./config.ts";

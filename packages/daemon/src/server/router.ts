@@ -7,7 +7,7 @@ import {
   type CommandArgs,
   type CommandHandler,
   type CommandName,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Logger } from "../log/index.ts";
 
 export type RouteResult =

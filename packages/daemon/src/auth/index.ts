@@ -1,4 +1,4 @@
-import type { AnyCommandHandler, SignInMethod, SignInStatus } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, SignInMethod, SignInStatus } from "@craft/protocol";
 import { notBuilt } from "../domain/index.ts";
 import { DEFAULT_SIGN_IN } from "./default.ts";
 

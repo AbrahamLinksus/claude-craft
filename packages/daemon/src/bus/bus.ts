@@ -3,7 +3,7 @@ import {
   type EventInput,
   type GraftCriticality,
   type StreamEvent,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Clock } from "../domain/index.ts";
 import {
   Subscriber,

@@ -1,4 +1,4 @@
-import { sessionKey, type RepoId, type SessionKey } from "../../../protocol/src/index.ts";
+import { sessionKey, type RepoId, type SessionKey } from "@craft/protocol";
 
 /** Session numbers per repo count up from 1 and are never reused (LLD 7.3). */
 export interface Numbering {

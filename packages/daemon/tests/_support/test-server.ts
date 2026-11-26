@@ -3,7 +3,7 @@ import {
   emptyGrammarTable,
   type AnyCommandHandler,
   type Snapshot,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { InMemoryBus } from "../../src/bus/index.ts";
 import {
   CommandRouter,

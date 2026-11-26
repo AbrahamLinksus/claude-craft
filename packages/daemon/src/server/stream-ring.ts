@@ -1,4 +1,4 @@
-import { STREAM_RING_SIZE, type StreamEvent } from "../../../protocol/src/index.ts";
+import { STREAM_RING_SIZE, type StreamEvent } from "@craft/protocol";
 
 /** The last N events, so a reconnecting client can catch up without a full snapshot. */
 export class StreamRing {

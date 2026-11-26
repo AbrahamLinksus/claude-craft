@@ -79,6 +79,29 @@ module.exports = {
       from: { path: "^packages/graft-(api|ui)/" },
       to: { path: "^packages/(daemon|client)/|^grafts/" },
     },
+    {
+      name: "no-relative-cross-package",
+      comment:
+        "CR-1: import another workspace package by name (@craft/<name>), never by relative path",
+      severity: "error",
+      from: { path: "^(packages|grafts|tools)/([^/]+)/" },
+      to: {
+        dependencyTypes: ["local", "aliased"],
+        path: "^(packages|grafts|tools)/",
+        pathNot: "^$1/$2/",
+      },
+    },
+    {
+      name: "workspace-dep-declared",
+      comment:
+        "CR-1: a package used by name must be listed in that package's package.json (an undeclared @craft name cannot resolve, so depcruise types it unknown)",
+      severity: "error",
+      from: {},
+      to: {
+        dependencyTypes: ["npm-no-pkg", "npm-unknown", "unknown"],
+        path: "^@craft/|node_modules/@craft/",
+      },
+    },
     { name: "no-circular", severity: "error", from: {}, to: { circular: true } },
   ],
   options: {

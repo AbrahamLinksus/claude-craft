@@ -8,7 +8,7 @@ import {
   cryoSchema,
   settingsSchema,
   type Settings,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { migrationsFor } from "./migrations/registry.ts";
 import type { CraftPaths } from "./paths.ts";
 import type { StoreFile } from "./store.ts";

@@ -1,4 +1,4 @@
-import type { AnyCommandHandler, SessionKey } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, SessionKey } from "@craft/protocol";
 import type { Disposable } from "../bus/index.ts";
 import type { Phase } from "../domain/index.ts";
 

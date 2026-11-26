@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import type { StreamEvent } from "../../../protocol/src/index.ts";
+import type { StreamEvent } from "@craft/protocol";
 import {
   NOTICE_LIMIT,
   TRANSCRIPT_LIMIT,

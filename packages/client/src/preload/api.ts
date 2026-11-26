@@ -1,4 +1,4 @@
-import type { CommandName, Reply, Snapshot, StreamEvent } from "../../../protocol/src/index.ts";
+import type { CommandName, Reply, Snapshot, StreamEvent } from "@craft/protocol";
 
 export type LinkStatus = "connecting" | "connected" | "reconnecting";
 

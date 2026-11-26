@@ -8,7 +8,7 @@ import {
   type Sentence,
   type SessionKey,
   type VerbDef,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Disposable } from "../bus/index.ts";
 import { notBuilt } from "../domain/index.ts";
 

@@ -28,7 +28,7 @@ import {
   sessionLabel,
   settingsSchema,
   snapshotSchema,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 
 describe("error codes (LLD 16.1)", () => {
   it("every code has a plain-words template", () => {

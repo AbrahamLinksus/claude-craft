@@ -1,4 +1,4 @@
-import type { SessionStateName } from "../../../protocol/src/index.ts";
+import type { SessionStateName } from "@craft/protocol";
 
 export type Pool = "own" | "team";
 

@@ -5,7 +5,7 @@ import {
   type CoreEventData,
   type CoreEventType,
   type StreamEvent,
-} from "../../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import {
   NOTICE_LIMIT,
   TRANSCRIPT_LIMIT,

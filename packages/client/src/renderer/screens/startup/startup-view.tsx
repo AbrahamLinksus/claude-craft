@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { RepoView } from "../../../../../protocol/src/index.ts";
+import type { RepoView } from "@craft/protocol";
 import { Box, Row, Text } from "../../theme/index.ts";
 
 export interface StartupViewProps {

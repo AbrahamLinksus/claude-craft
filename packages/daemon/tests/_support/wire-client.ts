@@ -10,7 +10,7 @@ import {
   randomNonce,
   type ClientMessage,
   type DaemonMessage,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { defaultAddress } from "../../src/server/index.ts";
 
 /** A pipe name nobody else uses (a Windows pipe, or a socket file elsewhere). */

@@ -1,4 +1,4 @@
-import type { RepoView } from "../../../../../protocol/src/index.ts";
+import type { RepoView } from "@craft/protocol";
 
 export type StartupAction =
   | { type: "move"; delta: number }

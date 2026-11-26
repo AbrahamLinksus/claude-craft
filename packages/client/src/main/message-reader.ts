@@ -1,5 +1,5 @@
 import type { Duplex } from "node:stream";
-import { parseDaemonLine, type DaemonMessage } from "../../../protocol/src/index.ts";
+import { parseDaemonLine, type DaemonMessage } from "@craft/protocol";
 import { LineReader } from "./line-reader.ts";
 
 /** The connection ended, or the worker sent something that is not a message. */

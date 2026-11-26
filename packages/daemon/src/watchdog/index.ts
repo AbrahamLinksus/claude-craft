@@ -1,4 +1,4 @@
-import type { AnyCommandHandler } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler } from "@craft/protocol";
 
 export interface Watchdog {
   /** Event-loop delay monitor: p99 > 100 ms over 10 s gives a log line and a Notice (LLD 16.2). */

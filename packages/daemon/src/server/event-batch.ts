@@ -1,4 +1,4 @@
-import { latestWinsKey, type Criticality, type StreamEvent } from "../../../protocol/src/index.ts";
+import { latestWinsKey, type Criticality, type StreamEvent } from "@craft/protocol";
 
 interface TextData {
   msgId: string;

@@ -1,6 +1,6 @@
 import { PassThrough } from "node:stream";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { encodeLine, type StreamEvent } from "../../../protocol/src/index.ts";
+import { encodeLine, type StreamEvent } from "@craft/protocol";
 import { clientHandshake, ImpostorError } from "../../src/main/handshake.ts";
 import { DaemonLink, type LinkDeps } from "../../src/main/link.ts";
 import type { LinkState } from "../../src/main/link-types.ts";

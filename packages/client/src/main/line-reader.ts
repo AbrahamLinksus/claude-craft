@@ -1,4 +1,4 @@
-import { MAX_LINE_BYTES } from "../../../protocol/src/index.ts";
+import { MAX_LINE_BYTES } from "@craft/protocol";
 
 export type LineResult = { ok: true; lines: string[] } | { ok: false };
 

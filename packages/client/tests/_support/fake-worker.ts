@@ -11,7 +11,7 @@ import {
   type DaemonMessage,
   type Snapshot,
   type StreamEvent,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 
 export function emptySnapshot(): Snapshot {
   return {

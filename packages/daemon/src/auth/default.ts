@@ -1,4 +1,4 @@
-import type { SignInMethod } from "../../../protocol/src/index.ts";
+import type { SignInMethod } from "@craft/protocol";
 
 /**
  * The ONLY place the default sign-in lives (owner decision at LLD approval: subscription default).

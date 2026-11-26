@@ -1,4 +1,4 @@
-import type { AnyCommandHandler } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler } from "@craft/protocol";
 import type { SettingsService } from "./settings-service.ts";
 
 /** Commands owned by the store module, registered by `main.ts`. */

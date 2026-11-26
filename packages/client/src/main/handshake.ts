@@ -5,7 +5,7 @@ import {
   proofsEqual,
   randomNonce,
   type ClientMessage,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { LinkClosedError, type MessageReader } from "./message-reader.ts";
 
 /** The worker could not prove it holds the token (LLD 2.2: possible impostor). */

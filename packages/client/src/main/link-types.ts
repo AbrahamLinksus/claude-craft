@@ -1,4 +1,4 @@
-import type { CommandName, Snapshot, StreamEvent } from "../../../protocol/src/index.ts";
+import type { CommandName, Snapshot, StreamEvent } from "@craft/protocol";
 import type { LinkState } from "../preload/api.ts";
 
 export type { LinkState, LinkStatus } from "../preload/api.ts";

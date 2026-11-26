@@ -1,5 +1,5 @@
 import type { Duplex } from "node:stream";
-import type { GraftCriticality, Snapshot } from "../../../protocol/src/index.ts";
+import type { GraftCriticality, Snapshot } from "@craft/protocol";
 import type { Bus } from "../bus/index.ts";
 import type { Clock } from "../domain/index.ts";
 import type { Logger } from "../log/index.ts";

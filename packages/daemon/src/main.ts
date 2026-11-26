@@ -1,6 +1,6 @@
 import { userInfo } from "node:os";
 import { pathToFileURL } from "node:url";
-import { CRAFT_VERSION, type AnyCommandHandler, type Snapshot } from "../../protocol/src/index.ts";
+import { CRAFT_VERSION, type AnyCommandHandler, type Snapshot } from "@craft/protocol";
 import * as agent from "./agent/index.ts";
 import * as auth from "./auth/index.ts";
 import { InMemoryBus, SystemClock, type Bus } from "./bus/index.ts";

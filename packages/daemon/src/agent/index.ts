@@ -4,7 +4,7 @@ import type {
   CoreEvent,
   PermissionModeSetting,
   SessionKey,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { notBuilt } from "../domain/index.ts";
 import type { ApprovalGate, ToolGate } from "../intercept/index.ts";
 

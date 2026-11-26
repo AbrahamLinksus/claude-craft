@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { STREAM_RING_SIZE, type StreamEvent } from "../../../protocol/src/index.ts";
+import { STREAM_RING_SIZE, type StreamEvent } from "@craft/protocol";
 import { OwnerOnlyAcl, type FileRunner } from "../../src/process/index.ts";
 import { StreamRing, TokenFile, defaultAddress, isAddressInUse } from "../../src/server/index.ts";
 import { EventBatch } from "../../src/server/event-batch.ts";

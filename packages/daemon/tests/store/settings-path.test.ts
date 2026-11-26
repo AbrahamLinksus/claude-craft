@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { CraftError, defaultSettings, describeError } from "../../../protocol/src/index.ts";
+import { CraftError, defaultSettings, describeError } from "@craft/protocol";
 import { JsonStore, craftPaths, storeFiles, withSettingAt } from "../../src/store/index.ts";
 import { MemoryFileSystem } from "../_support/memory-fs.ts";
 

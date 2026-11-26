@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { RepoView } from "../../../../../protocol/src/index.ts";
+import type { RepoView } from "@craft/protocol";
 import { useBridge, useCraft } from "../../state/index.ts";
 import { clampIndex, startupAction } from "./startup-keys.ts";
 

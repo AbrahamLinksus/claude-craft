@@ -5,7 +5,7 @@ import {
   type DaemonMessage,
   type GraftCriticality,
   type StreamEvent,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Bus, Disposable } from "../bus/index.ts";
 import type { Clock } from "../domain/index.ts";
 import { EventBatch } from "./event-batch.ts";

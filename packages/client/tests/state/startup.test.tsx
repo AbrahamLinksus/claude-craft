@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import type { RepoView } from "../../../protocol/src/index.ts";
+import type { RepoView } from "@craft/protocol";
 import { MacroRecorder, ModeMachine, parseSentence } from "../../src/renderer/input/index.ts";
 import { clampIndex, startupAction } from "../../src/renderer/screens/startup/startup-keys.ts";
 import { StartupView } from "../../src/renderer/screens/startup/startup-view.tsx";

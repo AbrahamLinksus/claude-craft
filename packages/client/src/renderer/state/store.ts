@@ -1,4 +1,4 @@
-import type { Snapshot, StreamEvent } from "../../../../protocol/src/index.ts";
+import type { Snapshot, StreamEvent } from "@craft/protocol";
 import type { LinkState } from "../../preload/api.ts";
 import { fromSnapshot, initialState, type ClientState } from "./client-state.ts";
 import { applyEvent } from "./reducers.ts";

@@ -3,7 +3,7 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { Reply } from "../../../protocol/src/index.ts";
+import type { Reply } from "@craft/protocol";
 import * as agent from "../../src/agent/index.ts";
 import * as auth from "../../src/auth/index.ts";
 import * as eventlog from "../../src/eventlog/index.ts";

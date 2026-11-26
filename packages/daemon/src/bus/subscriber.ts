@@ -3,7 +3,7 @@ import {
   type Criticality,
   type SessionKey,
   type StreamEvent,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 
 export interface Disposable {
   dispose(): void;

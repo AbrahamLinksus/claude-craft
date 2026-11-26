@@ -1,4 +1,4 @@
-import { CraftError } from "../../../protocol/src/index.ts";
+import { CraftError } from "@craft/protocol";
 import { LAUNCH_POLL_MS, LAUNCH_WAIT_MS } from "./constants.ts";
 
 export interface LauncherDeps {

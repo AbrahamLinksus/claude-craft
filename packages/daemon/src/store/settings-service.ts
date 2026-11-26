@@ -1,4 +1,4 @@
-import { CraftError, settingsSchema, type Settings } from "../../../protocol/src/index.ts";
+import { CraftError, settingsSchema, type Settings } from "@craft/protocol";
 import type { StoreFiles } from "./files.ts";
 import type { Store } from "./store.ts";
 

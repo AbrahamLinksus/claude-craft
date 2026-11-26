@@ -1,10 +1,4 @@
-import type {
-  AnyCommandHandler,
-  RepoId,
-  RepoView,
-  SessionKey,
-  SessionView,
-} from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, RepoId, RepoView, SessionKey, SessionView } from "@craft/protocol";
 import type { AgentPort, ModelId } from "../agent/index.ts";
 import type { AuthService } from "../auth/index.ts";
 import type { Bus } from "../bus/index.ts";

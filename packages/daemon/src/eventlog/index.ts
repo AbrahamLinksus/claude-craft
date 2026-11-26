@@ -1,4 +1,4 @@
-import type { AnyCommandHandler, LogLine, SessionKey } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, LogLine, SessionKey } from "@craft/protocol";
 import { notBuilt } from "../domain/index.ts";
 
 export type LogLocation = { kind: "repo"; worktree: string } | { kind: "home"; repoDir: string };

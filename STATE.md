@@ -14,10 +14,10 @@
 | Runners | on, but limited: the guard treats task-runners' Bash as git-pr (no pipes/redirects), so runners skipped test/review/sync on T-03; the Orchestrator ran those steps itself. Consider running steps directly. |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M2 · Core scaffolding (0/8 tasks) |
-| Next step | T-01b (then T-01c, T-01d; T-06/T-07/T-08 after T-01b) |
+| Milestone | M2 · Core scaffolding (1/8 tasks) |
+| Next step | Round: T-01c, T-01d, T-06/T-07/T-08 (max 3 at once) |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 13:55 +05:30 |
+| Last updated | 2026-11-26 14:40 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -46,7 +46,7 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Known minors
 | Task | Where | Fix | Size |
 |---|---|---|---|
-| T-01 (→ T-01b/c) | relative @craft/protocol imports (bridge.ts:2 etc.) | workspace deps + codemod — CHANGE REQUEST before T-04/T-05 | ≈20 min |
+| T-01b | docs/LLD.md §0.3 | rule workspace-dep-declared uses `unknown` restricted to @craft names, not npm-no-pkg/npm-unknown — architect wording at M2 sync | ≈3 min |
 | T-01 (→ T-01b/c) | daemon/src/main.ts:183 | use injected env CRAFT_PIPE | ≈5 min |
 | T-01 (→ T-01b/c) | protocol/src/wire.ts:15 | clientNonce length(44) | ≈7 min |
 | T-01 (→ T-01b/c) | client/src/main/link.ts:135 | version-mismatch Notice (LLD §2.3) | ≈10 min |

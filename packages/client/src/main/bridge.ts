@@ -1,5 +1,5 @@
 import type { IpcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron";
-import { CraftError, type Reply } from "../../../protocol/src/index.ts";
+import { CraftError, type Reply } from "@craft/protocol";
 import { CHANNELS } from "../preload/channels.ts";
 import type { BridgeCommand, BridgeMessage, LinkState, LogLevel } from "../preload/api.ts";
 import type { ClientLog } from "./client-log.ts";

@@ -1,4 +1,4 @@
-import type { Cryo, SessionStateName } from "../../../protocol/src/index.ts";
+import type { Cryo, SessionStateName } from "@craft/protocol";
 
 /** Events that move a session between states (LLD 7.2 diagram). */
 export type FsmEvent =

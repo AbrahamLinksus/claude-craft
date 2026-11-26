@@ -8,7 +8,7 @@ import {
   type DaemonMessage,
   type ErrorCode,
   type Reply,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import { clientHandshake, ImpostorError } from "./handshake.ts";
 import type { LinkCommand, LinkEvents, LinkState, SnapshotMessage } from "./link-types.ts";
 import { MessageReader } from "./message-reader.ts";

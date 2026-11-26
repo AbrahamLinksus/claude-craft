@@ -1,9 +1,4 @@
-import {
-  parseSentence,
-  type GrammarTable,
-  type ParseResult,
-  type Sentence,
-} from "../../../protocol/src/index.ts";
+import { parseSentence, type GrammarTable, type ParseResult, type Sentence } from "@craft/protocol";
 
 export { parseSentence };
 export type { ParseResult };

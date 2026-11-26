@@ -1,4 +1,4 @@
-import type { AnyCommandHandler, Criticality, GraftView } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler, Criticality, GraftView } from "@craft/protocol";
 import { notBuilt } from "../domain/index.ts";
 
 export interface GraftHost {

@@ -1,4 +1,4 @@
-import type { AnyCommandHandler } from "../../../protocol/src/index.ts";
+import type { AnyCommandHandler } from "@craft/protocol";
 import type { Disposable } from "../bus/index.ts";
 import { notBuilt } from "../domain/index.ts";
 import type { RunResult } from "../grammar/index.ts";

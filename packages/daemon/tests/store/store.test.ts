@@ -2,7 +2,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync, mkdirSync, existsSync
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { CraftError, defaultSettings, type CommandHandler } from "../../../protocol/src/index.ts";
+import { CraftError, defaultSettings, type CommandHandler } from "@craft/protocol";
 import {
   JsonStore,
   NodeFileSystem,

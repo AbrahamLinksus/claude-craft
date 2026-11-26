@@ -1,11 +1,6 @@
 import { createServer, type Socket } from "node:net";
 import { afterEach, describe, expect, it } from "vitest";
-import {
-  PROTOCOL_VERSION,
-  proofFor,
-  type Reply,
-  type StreamEvent,
-} from "../../../protocol/src/index.ts";
+import { PROTOCOL_VERSION, proofFor, type Reply, type StreamEvent } from "@craft/protocol";
 import { ConnectionServer } from "../../src/server/index.ts";
 import { ManualClock } from "../_support/manual-clock.ts";
 import { startTestServer, type TestServer } from "../_support/test-server.ts";

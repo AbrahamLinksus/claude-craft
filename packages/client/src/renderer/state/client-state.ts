@@ -6,7 +6,7 @@ import {
   type SessionView,
   type SignInStatus,
   type Snapshot,
-} from "../../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { LinkState } from "../../preload/api.ts";
 
 /** Lines kept per session; older ones are fetched on scroll (LLD 13.2). */

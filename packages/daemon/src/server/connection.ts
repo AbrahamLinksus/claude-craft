@@ -12,7 +12,7 @@ import {
   type DaemonMessage,
   type ErrorCode,
   type Snapshot,
-} from "../../../protocol/src/index.ts";
+} from "@craft/protocol";
 import type { Bus } from "../bus/index.ts";
 import type { Clock } from "../domain/index.ts";
 import type { Logger } from "../log/index.ts";

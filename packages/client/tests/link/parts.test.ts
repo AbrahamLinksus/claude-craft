@@ -4,7 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { PassThrough } from "node:stream";
 import { afterEach, describe, expect, it } from "vitest";
-import { CraftError, MAX_LINE_BYTES } from "../../../protocol/src/index.ts";
+import { CraftError, MAX_LINE_BYTES } from "@craft/protocol";
 import { fileClientLog } from "../../src/main/client-log.ts";
 import { loadMainConfig } from "../../src/main/config.ts";
 import { DaemonLauncher, type LauncherDeps } from "../../src/main/launcher.ts";

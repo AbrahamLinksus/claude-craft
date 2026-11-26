@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseSentence, type GrammarTable } from "../../../protocol/src/index.ts";
+import { parseSentence, type GrammarTable } from "@craft/protocol";
 import {
   allocateNumber,
   branchFor,

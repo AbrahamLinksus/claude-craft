@@ -2,8 +2,8 @@
  * Key routing, first match wins (LLD 13.3). The signatures here are fixed; later tasks fill in
  * the routing steps (prompt, `:` line, panel keys) behind them without changing these exports.
  */
-export { parseSentence } from "../../../../protocol/src/index.ts";
-export type { NextKey, ParseResult } from "../../../../protocol/src/index.ts";
+export { parseSentence } from "@craft/protocol";
+export type { NextKey, ParseResult } from "@craft/protocol";
 
 export type Mode = "TALK" | "LAB";
 
