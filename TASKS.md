@@ -95,7 +95,7 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 ### T-01c · CR-1: snapshot seq, one daemon address, strict handshake nonces
 - Owner: backend-coder, frontend-coder (backend-coder: protocol `wire.ts`/`address.ts`, daemon `takeSnapshot` and `main.ts`; then frontend-coder: client `link.ts`, `config.ts`)
 - Depends on: T-01b
-- Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**, packages/daemon/src/server/index.ts
+- Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**, packages/daemon/src/server/index.ts, packages/client/tests/_support/fake-worker.ts, packages/client/tests/_support/link-rig.ts, packages/daemon/tests/_support/test-server.ts, packages/daemon/tests/_support/wire-client.ts
 - Context: SPEC US-17 · LLD §1.3, §1.5, §2.1, §2.3, §2.4, §3 · files: packages/protocol/src/{wire,index}.ts, packages/daemon/src/server/*, packages/daemon/src/main.ts, packages/client/src/main/{link,config}.ts
 - Why separate: the T-01b import change must land first (bare-name imports must resolve before this code uses them), and splitting lets T-01d, T-06, T-07 and T-08 start right after T-01b while this runs
 - Status: In progress
@@ -167,11 +167,11 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Depends on: —
 - Files: packages/client/package.json, packages/daemon/package.json, pnpm-lock.yaml, pnpm-workspace.yaml
 - Context: LLD §0.5 (package table), §6.4 (reaper tier B), DECISIONS D-21, D-27 · files: packages/*/package.json, pnpm-lock.yaml
-- Status: In progress
+- Status: Done
 - Acceptance criteria:
   - [ ] packages/client/package.json lists `"@craft/graft-ui": "workspace:*"`; packages/daemon/package.json lists `@anthropic-ai/claude-agent-sdk` exactly 0.3.332 and `koffi` exactly 3.3.8 (D-21, D-27); `pnpm install --frozen-lockfile` succeeds on a clean clone
   - [ ] koffi loads in the daemon runtime (Electron's Node, per LLD §0.5/D-15) — a one-line load check passes; `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes on main
-- Result:
+- Result: ✅ 2/2 · graft-ui link, SDK 0.3.332, koffi 3.3.8 (allowBuilds, D-28) · koffi loads in Node + Electron · clean clone OK · cost not readable
 
 ### T-07 · AgentPort, SDK adapter and process reaper
 - Owner: agent-engineer
