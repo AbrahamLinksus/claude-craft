@@ -59,16 +59,26 @@ describe("handshake over the real pipe (G-05)", () => {
   it("the daemon proves the token too: the challenge carries the daemon's proof", async () => {
     const s = await boot({ epoch: 42 });
     const c = dial(s.address);
-    c.send({ type: "hello", protocol: PROTOCOL_VERSION, clientVersion: "t", clientNonce: "abc" });
+    c.send({
+      type: "hello",
+      protocol: PROTOCOL_VERSION,
+      clientVersion: "t",
+      clientNonce: "a".repeat(44),
+    });
     const challenge = await c.waitFor("challenge");
     expect(challenge.epoch).toBe(42);
-    expect(challenge.proof).toBe(await proofFor(await s.token(), "daemon", "abc"));
+    expect(challenge.proof).toBe(await proofFor(await s.token(), "daemon", "a".repeat(44)));
   });
 
   it("test_g05_a_client_without_the_token_gets_bye_unauthorized", async () => {
     const s = await boot();
     const c = dial(s.address);
-    c.send({ type: "hello", protocol: PROTOCOL_VERSION, clientVersion: "t", clientNonce: "n" });
+    c.send({
+      type: "hello",
+      protocol: PROTOCOL_VERSION,
+      clientVersion: "t",
+      clientNonce: "n".repeat(44),
+    });
     const challenge = await c.waitFor("challenge");
     const proof = await proofFor("not-the-token", "client", challenge.serverNonce);
     c.send({ type: "auth", proof });
@@ -248,7 +258,12 @@ describe("commands", () => {
   it("refuses commands from a client on another protocol version, except daemon.restart", async () => {
     const s = await boot();
     const c = dial(s.address);
-    c.send({ type: "hello", protocol: PROTOCOL_VERSION + 1, clientVersion: "t", clientNonce: "n" });
+    c.send({
+      type: "hello",
+      protocol: PROTOCOL_VERSION + 1,
+      clientVersion: "t",
+      clientNonce: "n".repeat(44),
+    });
     const challenge = await c.waitFor("challenge");
     c.send({
       type: "auth",

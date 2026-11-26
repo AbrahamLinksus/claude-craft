@@ -29,7 +29,10 @@
 | D-24 | 2026-11-26 | Desktop shell (spike 4) | Electron 45.5.0 locked | p95 17–18 ms vs 50 ms target; Tauri not measured (D-23) | Tauri | T-03 |
 | D-25 | 2026-11-26 | Shared-format fixes before M2 | Fix now as change request CR-1: @craft/protocol workspace deps + codemod for relative imports; seq in snapshot.get reply (stale lastSeq after resync) | ~30 min; M2 builds on the corrected format | Leave as known minors | CR-1 |
 | D-26 | 2026-11-26 | CR-1 approved | T-01b/T-01c/T-01d added to M2 (M2 5→8); LLD §0.2, §0.3, §1.3, §1.5, §2.1–§2.4 updated | Closes 6 T-01 minors | Cancel CR | CR-1 |
+| D-27 | 2026-11-26 | Process reaper add-on | koffi 3.3.8 approved for reaper tier B (T-02: 0 strays vs 10–15 without) | Installed into the project only, by env-setup | Helper program (tier C); sweep at next start only | T-07 |
+| D-28 | 2026-11-26 | koffi install script | Allowed for koffi only (allowBuilds in pnpm-workspace.yaml); every other package's install script stays blocked; stop and ask if it must compile instead of fetching a prebuilt | Runs code downloaded with koffi at install | Helper program; sweep at next start | T-06s |
 
 ## Tier 2 — decided by agents (overrule any time)
 | ID | Date | Decision | Chosen | Agent | Task |
 |---|---|---|---|---|---|
+| D-T2-01 | 2026-11-26 | Prompt overlay position | Sits above the statusline and bottom bar (doesn't cover them); which-key hides while a modal prompt is open (the modal captures all keys) | orchestrator | T-06 |

@@ -2,6 +2,7 @@ import {
   defaultSettings,
   emptyGrammarTable,
   type AnyCommandHandler,
+  type SnapshotReply,
   type Snapshot,
 } from "@craft/protocol";
 import { InMemoryBus } from "../../src/bus/index.ts";
@@ -11,6 +12,7 @@ import {
   SocketTransport,
   TokenFile,
   commands as serverCommands,
+  takeSnapshot,
   type StartResult,
 } from "../../src/server/index.ts";
 import { MemoryFileSystem } from "./memory-fs.ts";
@@ -53,6 +55,8 @@ export interface TestServerOptions {
   bus?: InMemoryBus;
   clock?: ManualClock;
   extraCommands?: AnyCommandHandler[];
+  /** The state `snapshot.get` and the handshake read (default: empty). */
+  state?: () => Snapshot;
   acl?: { restrict(path: string): Promise<unknown> };
 }
 
@@ -67,9 +71,10 @@ export async function startTestServer(opts: TestServerOptions = {}): Promise<Tes
     new InMemoryBus({ clock, hooks: { onError: () => undefined, onLag: () => undefined } });
   const router = new CommandRouter(log);
   const state = { restarts: 0 };
+  const read = opts.state ?? emptySnapshot;
   router.register(
     ...serverCommands({
-      snapshot: emptySnapshot,
+      snapshot: (): SnapshotReply => takeSnapshot(bus, read),
       restart: () => {
         state.restarts += 1;
       },
@@ -85,7 +90,7 @@ export async function startTestServer(opts: TestServerOptions = {}): Promise<Tes
   const server = new ConnectionServer({
     transport: new SocketTransport(address),
     bus,
-    snapshot: emptySnapshot,
+    snapshot: read,
     router,
     token: tokenFile,
     clock,

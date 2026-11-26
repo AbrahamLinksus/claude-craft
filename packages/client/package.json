@@ -5,6 +5,7 @@
   "type": "module",
   "main": "src/index.ts",
   "dependencies": {
+    "@craft/graft-ui": "workspace:*",
     "@craft/protocol": "workspace:*",
     "@tanstack/react-virtual": "3.14.28",
     "react": "19.3.1",

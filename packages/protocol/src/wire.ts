@@ -4,6 +4,15 @@ import { errorCodeSchema } from "./errors.ts";
 import { streamEventSchema } from "./ids.ts";
 import { snapshotSchema } from "./views.ts";
 
+/** A 32-byte nonce in base64 is exactly 44 characters (LLD 1.3). */
+export const NONCE_CHARS = 44;
+
+const snapshotReplyShape = { seq: z.number().int(), state: snapshotSchema };
+
+/** The body of `snapshot.get` and of the handshake `snapshot`: state as of `seq`. */
+export const snapshotReplySchema = z.object(snapshotReplyShape);
+export type SnapshotReply = z.infer<typeof snapshotReplySchema>;
+
 const resumeSchema = z.object({ epoch: z.number(), lastSeq: z.number().int().nonnegative() });
 
 export const clientMessageSchema = z.discriminatedUnion("type", [
@@ -11,7 +20,7 @@ export const clientMessageSchema = z.discriminatedUnion("type", [
     type: z.literal("hello"),
     protocol: z.number().int(),
     clientVersion: z.string(),
-    clientNonce: z.string().min(1),
+    clientNonce: z.string().length(NONCE_CHARS),
   }),
   z.object({ type: z.literal("auth"), proof: z.string().min(1), resume: resumeSchema.optional() }),
   z.object({
@@ -28,10 +37,10 @@ export const daemonMessageSchema = z.discriminatedUnion("type", [
     type: z.literal("challenge"),
     daemonVersion: z.string(),
     epoch: z.number(),
-    serverNonce: z.string(),
+    serverNonce: z.string().length(NONCE_CHARS),
     proof: z.string(),
   }),
-  z.object({ type: z.literal("snapshot"), seq: z.number().int(), state: snapshotSchema }),
+  z.object({ type: z.literal("snapshot"), ...snapshotReplyShape }),
   z.object({ type: z.literal("events"), items: z.array(streamEventSchema) }),
   z.object({ type: z.literal("resync") }),
   z.discriminatedUnion("ok", [

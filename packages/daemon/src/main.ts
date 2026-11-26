@@ -1,6 +1,12 @@
 import { userInfo } from "node:os";
 import { pathToFileURL } from "node:url";
-import { CRAFT_VERSION, type AnyCommandHandler, type Snapshot } from "@craft/protocol";
+import {
+  CRAFT_VERSION,
+  daemonAddress,
+  type AnyCommandHandler,
+  type Snapshot,
+  type SnapshotReply,
+} from "@craft/protocol";
 import * as agent from "./agent/index.ts";
 import * as auth from "./auth/index.ts";
 import { InMemoryBus, SystemClock, type Bus } from "./bus/index.ts";
@@ -168,19 +174,20 @@ function allCommands(s: Services, serverDeps: server.ServerCommandDeps): AnyComm
 function buildServer(
   infra: Infra,
   s: Services,
-  epoch: number,
-  restart: () => void,
+  run: { epoch: number; restart: () => void; env: Env },
 ): server.ConnectionServer {
+  const { epoch, restart, env } = run;
   const { log, clock, bus, fs, paths } = infra;
   const user = userInfo().username;
   const router = new server.CommandRouter(log);
   const snapshot = (): Snapshot => buildSnapshot(s);
-  router.register(...allCommands(s, { snapshot, restart }));
-  const address = server.defaultAddress({
+  const take = (): SnapshotReply => server.takeSnapshot(bus, snapshot);
+  router.register(...allCommands(s, { snapshot: take, restart }));
+  const address = daemonAddress({
     platform: process.platform,
     username: user,
     home: paths.home,
-    override: process.env["CRAFT_PIPE"],
+    override: env["CRAFT_PIPE"],
   });
   const acl = new processModule.OwnerOnlyAcl(
     new processModule.ProcessRunner(),
@@ -225,7 +232,7 @@ export async function startDaemon(
   const infra = buildInfra(env);
   const services = await buildServices(infra);
   const epoch = infra.clock.now().getTime();
-  const srv = buildServer(infra, services, epoch, onRestart);
+  const srv = buildServer(infra, services, { epoch, restart: onRestart, env });
   const result = await srv.start();
   if (result === "listening") await afterListening(infra, services, epoch);
   const stop = async (): Promise<void> => {

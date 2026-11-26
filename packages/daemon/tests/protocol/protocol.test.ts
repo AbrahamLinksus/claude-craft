@@ -132,7 +132,7 @@ describe("wire messages", () => {
       type: "hello",
       protocol: PROTOCOL_VERSION,
       clientVersion: CRAFT_VERSION,
-      clientNonce: "n",
+      clientNonce: "n".repeat(44),
     } as const;
     const line = encodeLine(hello);
     expect(line.endsWith("\n")).toBe(true);

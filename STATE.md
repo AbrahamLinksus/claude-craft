@@ -14,10 +14,10 @@
 | Runners | on, but limited: the guard treats task-runners' Bash as git-pr (no pipes/redirects), so runners skipped test/review/sync on T-03; the Orchestrator ran those steps itself. Consider running steps directly. |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M2 · Core scaffolding (1/8 tasks) |
-| Next step | Round: T-01c, T-01d, T-06/T-07/T-08 (max 3 at once) |
+| Milestone | M2 · Core scaffolding (3/9 tasks: T-01b, T-06s, T-01c) |
+| Next step | T-06 (wire Shell into app.tsx, then test+review), T-07, then T-01d/T-04/T-08 |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 14:40 +05:30 |
+| Last updated | 2026-11-26 18:02 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -46,12 +46,11 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Known minors
 | Task | Where | Fix | Size |
 |---|---|---|---|
+| T-06s | electron postinstall | pnpm doesn't run electron's install script, so a fresh clone has no electron dist/ — T-01d's start script (or allowBuilds electron) must handle it | ≈10 min |
+| T-01c | protocol/src/wire.ts:1256 | seq .nonnegative() | ≈2 min |
+| T-01c | protocol/src/address.ts:2 | platform: string | ≈2 min |
+| T-01c | client/src/main/link.ts:217-229 | move needFull/destroy into resync() | ≈10 min |
 | T-01b | docs/LLD.md §0.3 | rule workspace-dep-declared uses `unknown` restricted to @craft names, not npm-no-pkg/npm-unknown — architect wording at M2 sync | ≈3 min |
-| T-01 (→ T-01b/c) | daemon/src/main.ts:183 | use injected env CRAFT_PIPE | ≈5 min |
-| T-01 (→ T-01b/c) | protocol/src/wire.ts:15 | clientNonce length(44) | ≈7 min |
-| T-01 (→ T-01b/c) | client/src/main/link.ts:135 | version-mismatch Notice (LLD §2.3) | ≈10 min |
-| T-01 (→ T-01b/c) | client/src/main/link.ts:193 | stale lastSeq after resync — protocol CHANGE REQUEST before M2 ends | ≈10 min |
-| T-01 (→ T-01b/c) | client/src/main/config.ts:30 | pipeName() into protocol | ≈10 min |
 | T-01 | client/src/preload/index.ts:16-24 | architect records ipcRenderer + ready/pickFolder/log in LLD | ≈2 min |
 | T-01 | daemon/src/server/server.ts:62-64 | stale daemon.sock on non-Windows | ≈10 min |
 | T-01 | daemon/src/store/store.ts:110 | async save | ≈2 min |
@@ -61,6 +60,7 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Context additions
 | Role | Also read | Why (from gap report) |
 |---|---|---|
+| tester (client tasks) | the renderer component that shows LinkState.message | T-01c: nobody checked the version Notice appears on screen |
 | reviewer | docs/LLD.md sections for every module whose stub/signature the task fixes (foundation-type tasks: §6–§13) | T-01 review couldn't check stub signatures without them |
 | researcher | full docs/SPEC.md | Read only SPEC §6-11 on the first research step |
 

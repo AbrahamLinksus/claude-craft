@@ -1,6 +1,5 @@
 import { duplexPair, type Duplex } from "node:stream";
 import {
-  CRAFT_VERSION,
   defaultSettings,
   emptyGrammarTable,
   encodeLine,
@@ -32,7 +31,9 @@ export interface WorkerOptions {
   /** Prove with a different token (an impostor). */
   proveWith?: string;
   snapshot?: Snapshot;
-  onCmd?: (msg: Extract<ClientMessage, { type: "cmd" }>) => DaemonMessage | undefined;
+  /** What the challenge says the worker's version is (default "test", the rig's client). */
+  daemonVersion?: string;
+  onCmd?: (msg: Extract<ClientMessage, { type: "cmd" }>) => DaemonMessage | undefined | null;
 }
 
 /** One scripted worker connection: speaks the daemon side of the handshake. */
@@ -43,6 +44,7 @@ export class FakeWorkerConnection {
   private buffer = "";
   private readonly opts: WorkerOptions;
   private nonce = "";
+  private lastSeq = 0;
 
   constructor(opts: WorkerOptions) {
     this.opts = opts;
@@ -65,6 +67,7 @@ export class FakeWorkerConnection {
   }
 
   events(items: StreamEvent[]): void {
+    this.lastSeq = items.at(-1)?.seq ?? this.lastSeq;
     this.send({ type: "events", items });
   }
 
@@ -86,10 +89,10 @@ export class FakeWorkerConnection {
   private async handle(msg: ClientMessage): Promise<void> {
     this.received.push(msg);
     if (msg.type === "hello") {
-      this.nonce = "server-nonce";
+      this.nonce = "s".repeat(44);
       this.send({
         type: "challenge",
-        daemonVersion: CRAFT_VERSION,
+        daemonVersion: this.opts.daemonVersion ?? "test",
         epoch: this.opts.epoch ?? 1,
         serverNonce: this.nonce,
         proof: await proofFor(this.opts.proveWith ?? this.opts.token, "daemon", msg.clientNonce),
@@ -102,8 +105,14 @@ export class FakeWorkerConnection {
       }
       this.send({ type: "snapshot", seq: 0, state: this.opts.snapshot ?? emptySnapshot() });
     } else {
-      const custom = this.opts.onCmd?.(msg);
-      this.send(custom ?? { type: "reply", id: msg.id, ok: true, data: emptySnapshot() });
+      this.answer(msg);
     }
+  }
+
+  private answer(msg: Extract<ClientMessage, { type: "cmd" }>): void {
+    const custom = this.opts.onCmd?.(msg);
+    if (custom === null) return; // `null`: leave the command unanswered
+    const data = { seq: this.lastSeq, state: emptySnapshot() };
+    this.send(custom ?? { type: "reply", id: msg.id, ok: true, data });
   }
 }
