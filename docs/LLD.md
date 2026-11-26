@@ -29,7 +29,7 @@
 ```
 claude-craft/
   package.json  pnpm-workspace.yaml  tsconfig.base.json  eslint.config.js  .prettierrc.json
-  .dependency-cruiser.cjs  vitest.workspace.ts  playwright.config.ts  scripts/check.sh  .env.example
+  .dependency-cruiser.cjs  vitest.config.ts  playwright.config.ts  scripts/check.sh  scripts/setup-tools.sh  .env.example
   packages/
     protocol/src/        wire.ts events.ts errors.ts ids.ts settings.ts version.ts index.ts      (§1)
     graft-api/src/       manifest.ts capabilities.ts context.ts ports.ts define.ts index.ts      (§11)
@@ -95,7 +95,7 @@ Pins checked 2026-11-25 (research §4). "pin at install" = exact version written
 | vite | 8.3.8 | Bundler (renderer, main, daemon) | electron-vite, tsup | toolkit |
 | @vitejs/plugin-react | pin at install | JSX for Vite | — | toolkit |
 | @tanstack/react-virtual | 3.14.28 | Virtualized transcripts/lists | react-virtuoso | trade-off |
-| koffi | pin at install (only if spike 5 needs it) | Windows job object calls (§6.4) | small Rust/C helper exe | trade-off |
+| koffi | pin at install (spike 5 chose tier B, so needed; owner approval pending at the `process/` task) | Windows job object calls (§6.4) | small Rust/C helper exe | trade-off |
 | write-file-atomic | pin at install | Atomic JSON writes with Windows rename retry | own temp+rename | toolkit |
 | vitest, @vitest/coverage-v8 | 5.1.1 | Tests + coverage | Jest | toolkit |
 | @playwright/test | pin at install | Electron end-to-end and latency budget tests | WebdriverIO | toolkit |
@@ -116,7 +116,7 @@ Saved as `.results/plan/diagrams/components.mmd`.
 ```mermaid
 flowchart LR
   subgraph Client[Electron client]
-    R[renderer: state, input, shell, screens, panel host] <-->|MessagePort| M[main: launcher, link, bridge]
+    R[renderer: state, input, shell, screens, panel host] <-->|ipcRenderer via preload| M[main: launcher, link, bridge]
   end
   subgraph Daemon[Daemon - Node]
     SRV[§2 server] --> GR[§10 grammar + undo] & PQ[§9 prompts] & SH[§7 sessions]
@@ -147,6 +147,16 @@ flowchart LR
 | + | Pipe: single instance, reconnect after daemon restart, second Windows user can't read `%USERPROFILE%\.craft\daemon.token` nor pass the handshake | All hold | Profile readable by others → token file gets explicit ACL via `icacls` at first run (§2.3); still failing → owner decision (localhost alternative is no better) |
 | + | Sign-in: `claude-login` path works with the SDK's bundled binary when the owner signed in through Anthropic's flow; error shape when not signed in / refused | Session starts; errors classified (§6.2) | Refusal shape unknown → map any auth failure to `AUTH_REJECTED` with the API-key hint |
 
+**M1 results (as built; details and fixtures in `docs/spikes/sdk.md`, `docs/spikes/shell.md`):**
+| # | Result | Branch taken |
+|---|---|---|
+| 1 | PASS: fork cut at turn N, `resume` works in a different cwd (plain dirs; worktree-at-sha not exercised) | Pass branch: §7.4 as written, **no `sessionStore` adapter**, no re-feed. Pass `dir` = original cwd to `forkSession` |
+| 2 | PASS: hook (with `timeout: 86_400`) and `canUseTool` both held 600 s, tool then ran | No `defer`/parked fallback. Holds > 600 s and the default hook timeout are **untested**; keep the explicit `timeout` |
+| 3 | PARTIAL: claude-login shape captured (`unifiedWindows.five_hour/seven_day`, `utilization` fraction 0..1, `resetsAt` Unix s; `unifiedWindows` not in SDK types); api-key **not captured** (no key) | §6.2 structural read confirmed; keep "absent under API key → tokens/cost only"; contract test must accept zero events |
+| 4 | Electron 45.5.0 p95 key-to-paint 17.3–18.4 ms (budget 50), ~390 MB WS; Tauri **not measured** (D-23) | Electron locked (D-24); Tauri fallback not needed |
+| 5 | Tier A FAILS (grandchildren survive: libuv job allows silent breakaway); tier B (emulated) leaves 0 | **Tier B** (§6.4). `koffi` still needs owner approval at the `process/` task; koffi load under the shipped runtime untested (fails → tier C) |
+| + sign-in | PASS: claude-login runs on the unmodified bundled binary; not-signed-in and bad-key shapes recorded | §6.2 mapping refined (`Not logged in` → `AUTH_MISSING`). §6.3 api-key precedence finding **UNCONFIRMED**, §6.3 unchanged until a clean-env re-run |
+
 ## Frozen after the foundation
 The foundation tasks (M1–M2) build these complete; feature tasks never edit them (changes go through a change request):
 - `packages/protocol/src/**` (core events and wire; graft events live in each graft)
@@ -155,7 +165,7 @@ The foundation tasks (M1–M2) build these complete; feature tasks never edit th
 - `packages/daemon/src/grafts/**` (loader discovers `grafts/*/graft.json` by glob; no list to edit)
 - `packages/client/src/main/**`, `preload/**`, `renderer/app.tsx`, `renderer/state/**`, `renderer/theme/**`, `renderer/shell/**`, `renderer/panels/host.tsx` (screens found by `import.meta.glob('./screens/*/index.tsx')`, graft UIs by `glob('/grafts/*/ui/index.tsx')`)
 - Test support: `packages/daemon/tests/_support/**`, `packages/client/tests/_support/**`, `tools/replay/**`
-- Root configs (gates; env-setup owns them): `tsconfig*.json`, `eslint.config.js`, `.dependency-cruiser.cjs`, `vitest.workspace.ts`, `playwright.config.ts`, `scripts/check.sh`, `tools/perf/budgets.json`
+- Root configs (gates; env-setup owns them): `tsconfig*.json`, `eslint.config.js`, `.dependency-cruiser.cjs`, `vitest.config.ts` (root; replaces `vitest.workspace.ts`), `playwright.config.ts`, `scripts/check.sh`, `scripts/setup-tools.sh`, `tools/perf/budgets.json`
 - Registries are one file per entry: graft = folder; screen = folder; core `:` commands = `packages/daemon/src/grammar/commands/<name>.ts` (glob); store migrations = `store/migrations/<file>-<from>-<to>.ts` (glob); tests per feature folder.
 
 ## §1 Protocol (`packages/protocol`)
@@ -272,7 +282,7 @@ sequenceDiagram
 - **Launch:** `DaemonLauncher` spawns `process.execPath` with `ELECTRON_RUN_AS_NODE=1` (dev: `node`) on `daemon/dist/main.js`, `detached: true, windowsHide: true, stdio: 'ignore'`, `unref()`; then retries connect up to 10 s. `~/.craft/daemon.json` = `{pid, version, epoch, startedAt}`.
 - **Version check:** `challenge.daemonVersion ≠ clientVersion` → Notice "Craft was updated: restart the background worker (sessions pause as cryo)"; `protocol` mismatch → only `daemon.restart` is accepted.
 - **Batching:** per connection, flush every 33 ms. Coalesce `AgentText{partial}` per `(sid,msgId)` by concatenation; `PanelState`/`GitStatusChanged`/`Spinner` latest-wins. If the socket's buffered bytes exceed 8 MB, drop non-critical; if critical backlog exceeds the ring, send `resync`.
-- **Renderer bridge:** `contextIsolation: true, sandbox: true, nodeIntegration: false`; preload exposes only `window.craft = {send(cmd): Promise<Reply>, onMessage(cb), onLinkState(cb)}` over a `MessagePort`.
+- **Renderer bridge:** `contextIsolation: true, sandbox: true, nodeIntegration: false`; preload (`preload/index.ts`, type `CraftBridge` in `preload/api.ts`) exposes only `window.craft = {send(cmd): Promise<Reply>, onMessage(cb), onLinkState(cb), ready(): Promise<void>, pickFolder(): Promise<string|undefined>, log(level, message)}` over `ipcRenderer` (channel names in `preload/channels.ts`; no `MessagePort`). `ready` re-pushes link state + snapshot to a late-loading window. Main's bridge checks `senderFrame.url` against the app page on **every** call (else `UNAUTHORIZED`; `log` silently dropped), and the window is locked to the app page (`will-navigate`/`will-redirect` prevented off-page, `window.open` denied).
 
 ### §2.4 Edge cases
 - Daemon restart while client open → new epoch → snapshot. Client killed → daemon unaffected (sessions keep running).
@@ -408,7 +418,7 @@ interface AgentSession {
 | `result` | `TurnFinished` (tokens from `modelUsage`, cumulative `total_cost_usd`; `lastMessageId` = last assistant uuid) |
 | `rate_limit_event` | `RateLimit`, read structurally: `rate_limit_info.unifiedWindows?.five_hour/seven_day`, else top-level `rateLimitType`+`utilization`+`resetsAt`; Unix seconds → ISO; anything missing → omitted; never throws |
 | `system` session state `requires_action` | `Spinner` (held badge) |
-Error classification (`classify.ts`, contract-tested in spike 3): assistant `error:'authentication_failed'` or auth result → `AUTH_REJECTED`; `rate_limit` / `RateLimit.status='rejected'` → `LIMITED` (+ `resetsAt`); network codes (`ECONNRESET`, `ENOTFOUND`, `ETIMEDOUT`, `EAI_AGAIN`), `server_error`/overloaded → `OFFLINE`; else `AGENT_ERROR`.
+Error classification (`classify.ts`, contract-tested against the spike fixtures): assistant `error:'authentication_failed'` (or the thrown "returned an error result" text) with text starting `Not logged in` → `AUTH_MISSING` (hint: run Claude's own sign-in); any other auth failure (e.g. `Invalid API key`, unrecognised) → `AUTH_REJECTED`; `rate_limit` / `RateLimit.status='rejected'` → `LIMITED` (+ `resetsAt`); network codes (`ECONNRESET`, `ENOTFOUND`, `ETIMEDOUT`, `EAI_AGAIN`), `server_error`/overloaded → `OFFLINE`; else `AGENT_ERROR`.
 
 ### §6.3 Sign-in (`auth/`) — both paths behind one setting
 ```ts
@@ -432,13 +442,15 @@ export const DEFAULT_SIGN_IN: SignInMethod = 'claude-login';
 ```ts
 interface ProcessReaper {
   init(): Promise<void>;                                   // Windows: tier B self-job if enabled; then sweep
-  spawn(opts: SpawnOptions): SpawnedProcess;               // passed to SDK spawnClaudeCodeProcess
+  spawn(opts: SpawnOptions): SpawnedProcess;               // passed to SDK spawnClaudeCodeProcess (one options object)
   track(child: ChildProcess, sid?: SessionKey): void;      // also used by CommandRunner, git worker
   sweepOrphans(): Promise<number>;
 }
-interface CommandRunner { run(req: {cwd: string; cmd: string; timeoutMs: number; signal}): Promise<{code: number; stdout: string; stderr: string}> } // race tests/lint
+interface SpawnOptions { command: string; args: string[]; cwd?: string; env: Readonly<Record<string, string | undefined>>; signal: AbortSignal }
+type SpawnedProcess = ChildProcess;
+interface CommandRunner { run(req: {cwd: string; cmd: string; timeoutMs: number; signal}): Promise<CommandResult> } // CommandResult = {code, stdout, stderr}; race tests/lint
 ```
-Three tiers; spike 5 picks the lowest that passes:
+M1: `process/index.ts` holds these types and a placeholder `createProcessReaper()` (spawn throws `INTERNAL`); `command-runner.ts` holds `ProcessRunner` and `OwnerOnlyAcl` (§2.3 icacls). **Spike 5 chose tier B** (§0.7). Three tiers:
 - **A (default, no package):** children spawned non-detached; libuv puts them in its kill-on-close job, so the daemon's death kills them. Spike checks grandchildren (tool commands run by the binary).
 - **B (koffi):** at `init`, `CreateJobObjectW` + `SetInformationJobObject(JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE)` + `AssignProcessToJobObject(job, GetCurrentProcess())`; the handle is never closed, so the kernel kills every descendant when the daemon dies. No breakaway flags are set.
 - **C (helper exe):** `tools/jobwrap` (tiny Rust/C exe) wraps each spawn: create job, spawn suspended, assign, resume, proxy stdio.
@@ -616,9 +628,10 @@ type RunResult = {ok: true; message?: string; openPanel?: string} | {ok: false; 
 interface UndoEntry { id: string; kind: 'merge' | 'prune' | 'pick'; owner: string; label: string; repoId: RepoId; createdAt: string; pushCheck: string[] /* shas */; payload: unknown }
 interface UndoJournal {
   record(e: Omit<UndoEntry, 'id' | 'createdAt'>): Promise<void>;     // keeps last 20 in state/undo.json
-  onUndo(owner: string, kind: UndoEntry['kind'], handler: (payload: unknown) => Promise<RunResult>): Disposable;
-  undoLast(): Promise<RunResult>;       // any pushCheck sha reachable from a remote-tracking ref → ALREADY_PUSHED, entry kept
+  onUndo(owner: string, kind: UndoEntry['kind'], handler: (payload: unknown) => Promise<UndoResult>): Disposable;
+  undoLast(): Promise<UndoResult>;      // any pushCheck sha reachable from a remote-tracking ref → ALREADY_PUSHED, entry kept
 }
+type UndoResult = RunResult;            // §10.1; a failure carries its code (ALREADY_PUSHED, UNDO_UNAVAILABLE)
 ```
 Handler missing (graft removed or dose 0) → `UNDO_UNAVAILABLE` "turn on <graft> to undo this".
 
@@ -706,7 +719,7 @@ interface GitWrite {
 
 ## §13 Client (`packages/client`) [C1c + client shell]
 ### §13.1 Main process (`src/main/`)
-`index.ts` (app lifecycle, one window), `launcher.ts` + `link.ts` (§2), `bridge.ts` (MessagePort to renderer), `window.ts` (BrowserWindow with the §2.3 web preferences, custom protocol `craft-graft://<name>/ui.js` serving only `~/.craft/grafts/<name>/dist/ui.js`).
+`index.ts` (app lifecycle, one window), `launcher.ts` + `link.ts` (§2; helpers `handshake.ts`, `line-reader.ts`, `message-reader.ts`, `retry-policy.ts`, `link-types.ts`, `node-adapters.ts`), `bridge.ts` (`registerBridge(opts)`: `ipcMain` handlers for the §2.3 preload API, sender-frame check on every call), `window.ts` (`createWindow` with the §2.3 web preferences; `appPageUrl`, `isAppPage`, `lockToAppPage`: no off-page navigation, `window.open` denied; custom protocol `craft-graft://<name>/ui.js` serving only `~/.craft/grafts/<name>/dist/ui.js` — not built in M1), `config.ts`, `constants.ts`, `build.config.ts`, `client-log.ts` (renderer `log` sink). Preload: `preload/{index,api,channels}.ts`.
 
 ### §13.2 Renderer state (`renderer/state/`)
 ```ts
@@ -828,3 +841,11 @@ Each graft: `graft.json` (§11.1), `daemon/index.ts` (`defineGraft`), `ui/index.
 | — (approval) | §6.3, §5.3 | Default sign-in = `claude-login` (subscription), API key fallback | owner | D-16..D-21 |
 | — (approval) | §8.3 | `acceptEdits` permission mode confirmed | owner | D-16..D-21 |
 | — (approval) | §8.3, §11.3, §16.1, §8.2 | Interceptor crash fails closed: held + "<graft> crashed" prompt | owner | D-16..D-21 |
+| M1 | §0.7 | Spike results added: 1 pass (no sessionStore), 2 pass to 600 s, 3 partial (claude-login only), 4 Electron locked / Tauri unmeasured, 5 tier B | spikes T-02, T-03 | D-23, D-24 |
+| M1 | §0.4, §6.4 | Reaper tier B chosen; `koffi` now needed (approval still pending at `process/` task) | spike 5 | — |
+| M1 | §6.2 | `Not logged in` auth failure → `AUTH_MISSING`; other auth failures → `AUTH_REJECTED` | sign-in spike error shapes | — |
+| M1 | §6.3 | Unchanged: api-key precedence finding UNCONFIRMED, needs clean-env re-run | spike env caveat | — |
+| M1 | §2.3, §13.1, §0.6 | Preload uses `ipcRenderer` (not `MessagePort`); adds `ready`, `pickFolder`, `log`; sender-frame check per call; window locked to app page | as built T-01 | — |
+| M1 | §6.4, §10.4 | `spawn(opts: SpawnOptions)` shape written out; `UndoResult = RunResult` (carries code) | as built T-01 | — |
+| M1 | Frozen, §0.2 | `vitest.workspace.ts` → root `vitest.config.ts`; `scripts/setup-tools.sh` added | env step | — |
+| M1 | open (not decided) | Relative `@craft/protocol` imports (workspace deps + codemod) and stale `lastSeq` after `resync` (§2.2) are pending change requests for the owner | STATE Known minors | — |

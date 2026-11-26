@@ -11,13 +11,13 @@
 | Stage | 7 Build |
 | Design | separate system design (why: large; daemon + client are separately running parts; external service = Claude Agent SDK) |
 | Plugin | dev-team-setup 1.1.0 |
-| Runners | to be checked when the build starts |
+| Runners | on, but limited: the guard treats task-runners' Bash as git-pr (no pipes/redirects), so runners skipped test/review/sync on T-03; the Orchestrator ran those steps itself. Consider running steps directly. |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M1 · Skeleton and spikes (3/3 tasks + T-01s) · milestone card next |
-| Next step | M1-docs (architect as-built sync + docs) → milestone 1 card |
+| Milestone | M2 · Core scaffolding (0/5 tasks) · M1 done 2026-11-26 |
+| Next step | CR-1 (D-25: protocol workspace imports + snapshot seq) via change-requests.md, then M2 round: T-04, T-06, T-08 |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 13:31 +05:30 |
+| Last updated | 2026-11-26 13:38 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -70,3 +70,6 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 - LLD frozen list still names vitest.workspace.ts; the env step made it root vitest.config.ts (architect to fix at the next as-built sync).
 - T-02 follow-ups: approve `koffi` at the task that builds process/ (reaper tier B); clean-env re-run of the API-key precedence finding before changing LLD §6.3; LLD §6.2 auth mapping refinement (Not logged in → AUTH_MISSING); holds > 600 s unmeasured.
 - Owner's weekly Claude limit was at 99% during T-02 (2026-11-26).
+- Milestone 1 approved 2026-11-26; owner chose a fresh session. First: CR-1 (D-25). Also add a simple one-command start script early (no start/dev script exists yet; README says so).
+- Taskgit gotchas on this machine: pass the repo path (C:/Users/Jake/claude-craft/claude-craft) to every taskgit command and run from C:/Users/Jake/claude-craft; set PYTHONUTF8=1 for capture.py mermaid and cost.py (Windows charmap errors). cost.py reports $0.00 here (not readable).
+- Quality-check configs (.dependency-cruiser.cjs, eslint, check.sh) can only be changed by env-setup, not devops.
