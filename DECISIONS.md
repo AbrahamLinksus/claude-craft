@@ -28,6 +28,7 @@
 | D-23 | 2026-11-26 | T-03 shell spike installs | Electron only (~250 MB in the project folder); Tauri not measured | The 'both shells measured' criterion is waived; Tauri stays the untested alternative | Install both (Rust + C++ tools); neither | T-03 |
 | D-24 | 2026-11-26 | Desktop shell (spike 4) | Electron 45.5.0 locked | p95 17–18 ms vs 50 ms target; Tauri not measured (D-23) | Tauri | T-03 |
 | D-25 | 2026-11-26 | Shared-format fixes before M2 | Fix now as change request CR-1: @craft/protocol workspace deps + codemod for relative imports; seq in snapshot.get reply (stale lastSeq after resync) | ~30 min; M2 builds on the corrected format | Leave as known minors | CR-1 |
+| D-26 | 2026-11-26 | CR-1 approved | T-01b/T-01c/T-01d added to M2 (M2 5→8); LLD §0.2, §0.3, §1.3, §1.5, §2.1–§2.4 updated | Closes 6 T-01 minors | Cancel CR | CR-1 |
 
 ## Tier 2 — decided by agents (overrule any time)
 | ID | Date | Decision | Chosen | Agent | Task |

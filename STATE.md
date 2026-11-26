@@ -14,10 +14,10 @@
 | Runners | on, but limited: the guard treats task-runners' Bash as git-pr (no pipes/redirects), so runners skipped test/review/sync on T-03; the Orchestrator ran those steps itself. Consider running steps directly. |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M2 · Core scaffolding (0/5 tasks) · M1 done 2026-11-26 |
-| Next step | CR-1 (D-25: protocol workspace imports + snapshot seq) via change-requests.md, then M2 round: T-04, T-06, T-08 |
+| Milestone | M2 · Core scaffolding (0/8 tasks) |
+| Next step | T-01b (then T-01c, T-01d; T-06/T-07/T-08 after T-01b) |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 13:38 +05:30 |
+| Last updated | 2026-11-26 13:55 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -46,12 +46,12 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Known minors
 | Task | Where | Fix | Size |
 |---|---|---|---|
-| T-01 | relative @craft/protocol imports (bridge.ts:2 etc.) | workspace deps + codemod — CHANGE REQUEST before T-04/T-05 | ≈20 min |
-| T-01 | daemon/src/main.ts:183 | use injected env CRAFT_PIPE | ≈5 min |
-| T-01 | protocol/src/wire.ts:15 | clientNonce length(44) | ≈7 min |
-| T-01 | client/src/main/link.ts:135 | version-mismatch Notice (LLD §2.3) | ≈10 min |
-| T-01 | client/src/main/link.ts:193 | stale lastSeq after resync — protocol CHANGE REQUEST before M2 ends | ≈10 min |
-| T-01 | client/src/main/config.ts:30 | pipeName() into protocol | ≈10 min |
+| T-01 (→ T-01b/c) | relative @craft/protocol imports (bridge.ts:2 etc.) | workspace deps + codemod — CHANGE REQUEST before T-04/T-05 | ≈20 min |
+| T-01 (→ T-01b/c) | daemon/src/main.ts:183 | use injected env CRAFT_PIPE | ≈5 min |
+| T-01 (→ T-01b/c) | protocol/src/wire.ts:15 | clientNonce length(44) | ≈7 min |
+| T-01 (→ T-01b/c) | client/src/main/link.ts:135 | version-mismatch Notice (LLD §2.3) | ≈10 min |
+| T-01 (→ T-01b/c) | client/src/main/link.ts:193 | stale lastSeq after resync — protocol CHANGE REQUEST before M2 ends | ≈10 min |
+| T-01 (→ T-01b/c) | client/src/main/config.ts:30 | pipeName() into protocol | ≈10 min |
 | T-01 | client/src/preload/index.ts:16-24 | architect records ipcRenderer + ready/pickFolder/log in LLD | ≈2 min |
 | T-01 | daemon/src/server/server.ts:62-64 | stale daemon.sock on non-Windows | ≈10 min |
 | T-01 | daemon/src/store/store.ts:110 | async save | ≈2 min |
@@ -70,6 +70,6 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 - LLD frozen list still names vitest.workspace.ts; the env step made it root vitest.config.ts (architect to fix at the next as-built sync).
 - T-02 follow-ups: approve `koffi` at the task that builds process/ (reaper tier B); clean-env re-run of the API-key precedence finding before changing LLD §6.3; LLD §6.2 auth mapping refinement (Not logged in → AUTH_MISSING); holds > 600 s unmeasured.
 - Owner's weekly Claude limit was at 99% during T-02 (2026-11-26).
-- Milestone 1 approved 2026-11-26; owner chose a fresh session. First: CR-1 (D-25). Also add a simple one-command start script early (no start/dev script exists yet; README says so).
+- Milestone 1 approved 2026-11-26; owner chose a fresh session. CR-1 merged (D-26). Also add a simple one-command start script early (no start/dev script exists yet; README says so).
 - Taskgit gotchas on this machine: pass the repo path (C:/Users/Jake/claude-craft/claude-craft) to every taskgit command and run from C:/Users/Jake/claude-craft; set PYTHONUTF8=1 for capture.py mermaid and cost.py (Windows charmap errors). cost.py reports $0.00 here (not readable).
 - Quality-check configs (.dependency-cruiser.cjs, eslint, check.sh) can only be changed by env-setup, not devops.
