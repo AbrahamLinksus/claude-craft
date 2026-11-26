@@ -1,25 +1,23 @@
 import type { ChildProcess } from "node:child_process";
 import { CraftError, type AnyCommandHandler, type SessionKey } from "@craft/protocol";
+import type { Logger } from "../log/index.ts";
+import type { Store, StoreFiles } from "../store/index.ts";
+import { ChildrenLedger } from "./children-ledger.ts";
+import { Reaper, type SpawnOptions } from "./reaper.ts";
+import { SystemProbe } from "./probe.ts";
 
 export {
   OwnerOnlyAcl,
   ProcessRunner,
+  type ChildTracker,
   type CommandResult,
   type CommandRunner,
   type FileRunner,
 } from "./command-runner.ts";
+export type { SpawnOptions };
 
 /** Handle the SDK gets back from `ProcessReaper.spawn` (LLD 6.4). */
 export type SpawnedProcess = ChildProcess;
-
-/** What the SDK's `spawnClaudeCodeProcess` hands over: one options object (LLD 6.4). */
-export interface SpawnOptions {
-  command: string;
-  args: string[];
-  cwd?: string;
-  env: Readonly<Record<string, string | undefined>>;
-  signal: AbortSignal;
-}
 
 export interface ProcessReaper {
   /** Windows: tier B self-job if enabled; then sweep. */
@@ -30,17 +28,42 @@ export interface ProcessReaper {
   track(child: ChildProcess, sid?: SessionKey): void;
   /** Kill recorded children of a dead daemon; returns how many were killed. */
   sweepOrphans(): Promise<number>;
+  /** Daemon shutdown: end every child still running. */
+  shutdown(): Promise<void>;
 }
 
-/** Placeholder until the reaper task: tracks nothing and refuses to spawn. */
+export interface ProcessReaperOptions {
+  store: Store;
+  files: StoreFiles;
+  log: Logger;
+  platform?: NodeJS.Platform;
+  /** Tier B self-job on Windows (default on). */
+  selfJob?: boolean;
+}
+
+/** The real reaper: records children in `state/children.json`, sweeps leftovers at start. */
+export function createNodeProcessReaper(opts: ProcessReaperOptions): ProcessReaper {
+  const platform = opts.platform ?? process.platform;
+  const log = opts.log.child("process");
+  return new Reaper({
+    ledger: new ChildrenLedger(opts.store, opts.files.children, log),
+    probe: new SystemProbe(platform),
+    log,
+    platform,
+    ...(opts.selfJob === undefined ? {} : { selfJob: opts.selfJob }),
+  });
+}
+
+/** Placeholder kept until `main.ts` calls `createNodeProcessReaper`: tracks nothing, refuses to spawn. */
 export function createProcessReaper(): ProcessReaper {
   return {
     init: () => Promise.resolve(),
     spawn: () => {
-      throw new CraftError("INTERNAL", {}, { module: "process", reason: "reaper not built yet" });
+      throw new CraftError("INTERNAL", {}, { module: "process", reason: "reaper not wired yet" });
     },
     track: () => undefined,
     sweepOrphans: () => Promise.resolve(0),
+    shutdown: () => Promise.resolve(),
   };
 }
 

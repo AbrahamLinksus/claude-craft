@@ -1,4 +1,4 @@
-import { execFile, spawn } from "node:child_process";
+import { execFile, spawn, type ChildProcess } from "node:child_process";
 
 export interface CommandResult {
   code: number;
@@ -25,7 +25,18 @@ export interface FileRunner {
   ): Promise<CommandResult>;
 }
 
+/** Anything that wants to know about the children the runner starts (the reaper). */
+export interface ChildTracker {
+  track(child: ChildProcess): void;
+}
+
 export class ProcessRunner implements CommandRunner, FileRunner {
+  private readonly tracker: ChildTracker | undefined;
+
+  constructor(tracker?: ChildTracker) {
+    this.tracker = tracker;
+  }
+
   runFile(
     file: string,
     args: readonly string[],
@@ -62,6 +73,7 @@ export class ProcessRunner implements CommandRunner, FileRunner {
         timeout: req.timeoutMs,
         ...(req.signal ? { signal: req.signal } : {}),
       });
+      this.tracker?.track(child);
       let stdout = "";
       let stderr = "";
       child.stdout.on("data", (d: Buffer) => (stdout += d.toString()));
