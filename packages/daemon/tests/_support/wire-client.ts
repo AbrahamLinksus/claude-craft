@@ -4,6 +4,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
   PROTOCOL_VERSION,
+  daemonAddress,
   encodeLine,
   parseDaemonLine,
   proofFor,
@@ -11,12 +12,11 @@ import {
   type ClientMessage,
   type DaemonMessage,
 } from "@craft/protocol";
-import { defaultAddress } from "../../src/server/index.ts";
 
 /** A pipe name nobody else uses (a Windows pipe, or a socket file elsewhere). */
 export function uniqueAddress(): string {
   const name = `craft-test-${randomUUID().slice(0, 8)}`;
-  return defaultAddress({
+  return daemonAddress({
     platform: process.platform,
     username: "tester",
     home: tmpdir(),

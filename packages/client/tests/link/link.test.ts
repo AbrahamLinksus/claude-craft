@@ -1,60 +1,12 @@
 import { PassThrough } from "node:stream";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { encodeLine, type StreamEvent } from "@craft/protocol";
 import { clientHandshake, ImpostorError } from "../../src/main/handshake.ts";
-import { DaemonLink, type LinkDeps } from "../../src/main/link.ts";
-import type { LinkState } from "../../src/main/link-types.ts";
 import { LinkClosedError, MessageReader } from "../../src/main/message-reader.ts";
-import {
-  FakeWorkerConnection,
-  emptySnapshot,
-  type WorkerOptions,
-} from "../_support/fake-worker.ts";
+import { emptySnapshot } from "../_support/fake-worker.ts";
+import { TOKEN, closeLinks, rig, until } from "../_support/link-rig.ts";
 
-const TOKEN = "t".repeat(64);
-const links: DaemonLink[] = [];
-
-interface Rig {
-  link: DaemonLink;
-  workers: FakeWorkerConnection[];
-  states: LinkState[];
-  ensureRunning: ReturnType<typeof vi.fn>;
-  options: { next: Partial<WorkerOptions> };
-}
-
-function rig(overrides: Partial<LinkDeps> = {}): Rig {
-  const workers: FakeWorkerConnection[] = [];
-  const options = { next: {} as Partial<WorkerOptions> };
-  const ensureRunning = vi.fn(() => Promise.resolve());
-  const link = new DaemonLink({
-    connect: () => {
-      const w = new FakeWorkerConnection({ token: TOKEN, ...options.next });
-      workers.push(w);
-      return w.client;
-    },
-    readToken: () => Promise.resolve(TOKEN),
-    launcher: { ensureRunning },
-    delay: () => new Promise((resolve) => setTimeout(resolve, 2)),
-    clientVersion: "test",
-    ...overrides,
-  });
-  links.push(link);
-  const states: LinkState[] = [];
-  link.on("state", (s) => states.push(s));
-  return { link, workers, states, ensureRunning, options };
-}
-
-async function until(check: () => boolean, what: string): Promise<void> {
-  for (let i = 0; i < 500; i++) {
-    if (check()) return;
-    await new Promise((r) => setTimeout(r, 5));
-  }
-  throw new Error(`timed out waiting for ${what}`);
-}
-
-afterEach(() => {
-  for (const l of links.splice(0)) l.close();
-});
+afterEach(closeLinks);
 
 describe("daemon link (US-17)", () => {
   it("starts the worker if needed, completes the token handshake and reports connected", async () => {
@@ -209,7 +161,7 @@ describe("handshake pieces", () => {
         type: "challenge",
         daemonVersion: "0",
         epoch: 1,
-        serverNonce: "n",
+        serverNonce: "n".repeat(44),
         proof: "p",
       }),
     );

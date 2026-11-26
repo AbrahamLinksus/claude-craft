@@ -18,6 +18,7 @@ import type { Clock } from "../domain/index.ts";
 import type { Logger } from "../log/index.ts";
 import { LineReader } from "./line-reader.ts";
 import type { CommandRouter } from "./router.ts";
+import { takeSnapshot } from "./snapshot.ts";
 import { StreamFeed } from "./stream-feed.ts";
 import type { StreamRing } from "./stream-ring.ts";
 
@@ -146,8 +147,8 @@ export class Connection {
     });
     this.feed = feed;
     if (missed === "gone") {
-      const seq = this.o.bus.lastSeq();
-      this.send({ type: "snapshot", seq, state: this.o.snapshot() });
+      const { seq, state } = takeSnapshot(this.o.bus, this.o.snapshot);
+      this.send({ type: "snapshot", seq, state });
       feed.start(seq, `conn-${this.o.id}`);
       return;
     }

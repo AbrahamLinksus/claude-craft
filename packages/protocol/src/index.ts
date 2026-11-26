@@ -1,3 +1,4 @@
+export * from "./address.ts";
 export * from "./commands.ts";
 export * from "./errors.ts";
 export * from "./events.ts";

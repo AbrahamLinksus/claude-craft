@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { STREAM_RING_SIZE, type StreamEvent } from "@craft/protocol";
+import { STREAM_RING_SIZE, daemonAddress, type StreamEvent } from "@craft/protocol";
 import { OwnerOnlyAcl, type FileRunner } from "../../src/process/index.ts";
-import { StreamRing, TokenFile, defaultAddress, isAddressInUse } from "../../src/server/index.ts";
+import { StreamRing, TokenFile, isAddressInUse } from "../../src/server/index.ts";
 import { EventBatch } from "../../src/server/event-batch.ts";
 import { LineReader } from "../../src/server/line-reader.ts";
 import { MemoryFileSystem } from "../_support/memory-fs.ts";
@@ -75,15 +75,18 @@ describe("connection name", () => {
   const base = { username: "jake", home: "/home/jake/.craft" };
 
   it("is \\\\.\\pipe\\craft-<user> on Windows, and CRAFT_PIPE overrides it", () => {
-    expect(defaultAddress({ ...base, platform: "win32" })).toBe("\\\\.\\pipe\\craft-jake");
-    expect(defaultAddress({ ...base, platform: "win32", override: "mine" })).toBe(
-      "\\\\.\\pipe\\mine",
+    expect(daemonAddress({ ...base, platform: "win32" })).toBe("\\\\.\\pipe\\craft-jake");
+    expect(daemonAddress({ ...base, platform: "win32", override: "mypipe" })).toBe(
+      "\\\\.\\pipe\\mypipe",
     );
-    expect(defaultAddress({ ...base, platform: "win32", override: "\\\\.\\pipe\\x" })).toBe(
+    expect(daemonAddress({ ...base, platform: "win32", override: "\\\\.\\pipe\\x" })).toBe(
       "\\\\.\\pipe\\x",
     );
-    expect(defaultAddress({ ...base, platform: "linux", override: "/tmp/s" })).toBe("/tmp/s");
-    expect(defaultAddress({ ...base, platform: "linux", override: "" })).toMatch(/daemon\.sock$/);
+    expect(daemonAddress({ ...base, platform: "linux", override: "/tmp/s" })).toBe("/tmp/s");
+    expect(daemonAddress({ ...base, platform: "linux", override: "" })).toBe(
+      "/home/jake/.craft/daemon.sock",
+    );
+    expect(daemonAddress({ ...base, platform: "darwin" })).toBe("/home/jake/.craft/daemon.sock");
   });
 
   it("recognises 'address in use'", () => {

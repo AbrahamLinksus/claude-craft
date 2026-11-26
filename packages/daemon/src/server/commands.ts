@@ -1,7 +1,8 @@
-import type { AnyCommandHandler, Snapshot } from "@craft/protocol";
+import type { AnyCommandHandler, SnapshotReply } from "@craft/protocol";
 
 export interface ServerCommandDeps {
-  snapshot: () => Snapshot;
+  /** `{seq, state}` taken in one synchronous step (see `takeSnapshot`). */
+  snapshot: () => SnapshotReply;
   /** Ask the daemon to exit so the launcher can start a fresh one (sessions go cryo). */
   restart: () => void;
 }

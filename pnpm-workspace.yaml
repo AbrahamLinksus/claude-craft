@@ -4,6 +4,7 @@ packages:
   - tools/*
 allowBuilds:
   electron-winstaller: false
+  koffi: true
 minimumReleaseAgeExclude:
   - electron@45.5.0
   - "@anthropic-ai/claude-agent-sdk-darwin-arm64@0.3.332"

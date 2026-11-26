@@ -10,18 +10,19 @@ import { sleep } from "../_support/wire-client.ts";
 
 let home = "";
 let address = "";
+let pipe = "";
 const handles: DaemonHandle[] = [];
 const SIGNALS = ["uncaughtException", "SIGINT", "SIGTERM"] as const;
 
 function env(): Record<string, string> {
-  return { CRAFT_HOME: home, CRAFT_LOG_LEVEL: "warn" };
+  return { CRAFT_HOME: home, CRAFT_LOG_LEVEL: "warn", CRAFT_PIPE: pipe };
 }
 
 beforeEach(() => {
   home = mkdtempSync(join(tmpdir(), "craft-proc-"));
   const name = `craft-proc-${randomUUID().slice(0, 8)}`;
   address = process.platform === "win32" ? `\\\\.\\pipe\\${name}` : join(home, "d.sock");
-  vi.stubEnv("CRAFT_PIPE", process.platform === "win32" ? name : address);
+  pipe = process.platform === "win32" ? name : address;
 });
 
 afterEach(async () => {
