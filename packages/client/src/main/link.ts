@@ -4,9 +4,10 @@ import {
   CraftError,
   describeError,
   encodeLine,
-  snapshotSchema,
+  snapshotReplySchema,
   type DaemonMessage,
   type ErrorCode,
+  type StreamEvent,
   type Reply,
 } from "@craft/protocol";
 import { clientHandshake, ImpostorError } from "./handshake.ts";
@@ -32,6 +33,8 @@ class ByeError extends Error {
   }
 }
 
+const UPDATED_NOTICE = "Craft was updated: restart the background worker (sessions pause as cryo)";
+
 const NOT_CONNECTED = "Craft is reconnecting to its background worker; try again in a moment";
 
 function errorReply(id: string): Reply {
@@ -48,6 +51,10 @@ export class DaemonLink extends EventEmitter<LinkEvents> {
   private epoch: number | undefined;
   private lastSeq = 0;
   private live = false;
+  /** A resync is unanswered or failed: the next connection must bring a full snapshot. */
+  private needFull = false;
+  private unanswered = 0;
+  private workerVersion: string | undefined;
   private nextId = 1;
   private current: LinkState = { status: "connecting" };
   private firstLink: { resolve(): void; reject(e: Error): void } | undefined;
@@ -130,9 +137,14 @@ export class DaemonLink extends EventEmitter<LinkEvents> {
         reader,
         readToken: () => this.deps.readToken(),
         clientVersion: this.deps.clientVersion,
-        resume: this.epoch === undefined ? undefined : { epoch: this.epoch, lastSeq: this.lastSeq },
+        resume:
+          this.epoch === undefined || this.needFull
+            ? undefined
+            : { epoch: this.epoch, lastSeq: this.lastSeq },
       });
       this.epoch = hello.epoch;
+      this.workerVersion = hello.daemonVersion;
+      this.unanswered = 0;
       for (;;) this.dispatch(await reader.next());
     } catch (error) {
       return this.explain(error);
@@ -154,13 +166,12 @@ export class DaemonLink extends EventEmitter<LinkEvents> {
     switch (msg.type) {
       case "snapshot":
         this.lastSeq = msg.seq;
+        this.needFull = false;
         this.markLive();
         this.emit("snapshot", { seq: msg.seq, state: msg.state });
         return;
       case "events":
-        this.lastSeq = msg.items.at(-1)?.seq ?? this.lastSeq;
-        this.markLive();
-        this.emit("events", msg.items);
+        this.applyEvents(msg.items);
         return;
       case "resync":
         void this.resync();
@@ -180,22 +191,48 @@ export class DaemonLink extends EventEmitter<LinkEvents> {
     if (this.live) return;
     this.live = true;
     this.retry.onConnected();
-    this.setState({ status: "connected" });
+    this.setState(
+      this.workerVersion === this.deps.clientVersion
+        ? { status: "connected" }
+        : { status: "connected", message: UPDATED_NOTICE },
+    );
     this.firstLink?.resolve();
     this.firstLink = undefined;
   }
 
-  /** The full state as of now, for a window that opened late or after a resync. */
+  /** Events the link already applied (seq at or below `lastSeq`) are dropped. */
+  private applyEvents(items: StreamEvent[]): void {
+    const fresh = items.filter((item) => item.seq > this.lastSeq);
+    if (fresh.length === 0) return;
+    this.lastSeq = fresh[fresh.length - 1]?.seq ?? this.lastSeq;
+    this.markLive();
+    this.emit("events", fresh);
+  }
+
+  /**
+   * The full state as of now, for a window that opened late or after a resync.
+   * An error reply or a body that is not `{seq, state}` closes the socket, so the
+   * reconnect brings a full snapshot.
+   */
   async snapshotNow(): Promise<SnapshotMessage | undefined> {
+    const socket = this.socket;
+    this.needFull = true;
+    this.unanswered++;
     const reply = await this.send({ name: "snapshot.get", args: {} });
-    if (!reply.ok) return undefined;
-    const parsed = snapshotSchema.safeParse(reply.data);
-    return parsed.success ? { seq: this.lastSeq, state: parsed.data } : undefined;
+    const parsed = reply.ok ? snapshotReplySchema.safeParse(reply.data) : undefined;
+    if (parsed?.success !== true) {
+      socket?.destroy();
+      return undefined;
+    }
+    if (socket === this.socket && --this.unanswered === 0) this.needFull = false;
+    return parsed.data;
   }
 
   private async resync(): Promise<void> {
     const snapshot = await this.snapshotNow();
-    if (snapshot !== undefined) this.emit("snapshot", snapshot);
+    if (snapshot === undefined) return;
+    this.lastSeq = Math.max(this.lastSeq, snapshot.seq);
+    this.emit("snapshot", snapshot);
   }
 
   private failPending(): void {

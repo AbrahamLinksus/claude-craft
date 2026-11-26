@@ -98,14 +98,14 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**, packages/daemon/src/server/index.ts, packages/client/tests/_support/fake-worker.ts, packages/client/tests/_support/link-rig.ts, packages/daemon/tests/_support/test-server.ts, packages/daemon/tests/_support/wire-client.ts
 - Context: SPEC US-17 · LLD §1.3, §1.5, §2.1, §2.3, §2.4, §3 · files: packages/protocol/src/{wire,index}.ts, packages/daemon/src/server/*, packages/daemon/src/main.ts, packages/client/src/main/{link,config}.ts
 - Why separate: the T-01b import change must land first (bare-name imports must resolve before this code uses them), and splitting lets T-01d, T-06, T-07 and T-08 start right after T-01b while this runs
-- Status: In progress
+- Status: Done
 - Acceptance criteria:
   - [ ] `snapshot.get` and the handshake both reply `{seq, state}` built by `takeSnapshot`; a test that calls `snapshot.get` right after `bus.publish` returns (no await between) gets `seq` equal to that event's seq and a `state` that already contains its effect (snapshot read is current before `bus.publish` returns); no event with seq > the reply's `seq` reaches the socket before the reply (US-17)
   - [ ] Client link: after a `resync`, an event the link already applied (seq ≤ the reply's `seq`) is dropped, so it applies once; two `resync`s before a reply never move `lastSeq` back; a reconnect while the resync is unanswered sends `auth` without `resume` and receives a full snapshot; an error reply or a bare `Snapshot` body closes the socket and the reconnect brings a full snapshot (US-17)
   - [ ] `daemonAddress` gives `\\.\pipe\craft-jake` on win32 for user `jake`, `\\.\pipe\mypipe` for override `mypipe`, `<home>/daemon.sock` elsewhere; the client and daemon both call it (the `transport.ts` copy is gone), and a `CRAFT_PIPE` set only in the daemon's injected env (not `process.env`) is the pipe it listens on and the client connects to
   - [ ] A `hello` whose `clientNonce` is 43 or 45 characters is refused and that connection closed while the daemon keeps running; the client refuses a `challenge` whose `serverNonce` is not 44 characters
   - [ ] A daemon whose `daemonVersion` differs from the client's shows the Notice "Craft was updated: restart the background worker (sessions pause as cryo)"; equal versions show nothing; the foundation end-to-end test still passes
-- Result:
+- Result: ✅ 5/5 · snapshot {seq,state}, resync without duplicates, daemonAddress, 44-char nonces, version Notice · 201 tests, 91% · review 0 major, 3 minor · cost not readable
 
 ### T-01d · One-command start: `pnpm start` opens Craft
 - Owner: env-setup, docs (env-setup: the start script and build configs, and checking it opens Craft on Windows 11; docs: the README line)

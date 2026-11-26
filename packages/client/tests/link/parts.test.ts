@@ -173,7 +173,7 @@ describe("config (US-17)", () => {
 
   it("uses a socket file in the home folder off Windows", () => {
     const c = loadMainConfig({ ...base, platform: "linux", env: { CRAFT_HOME: "/h" } });
-    expect(c.address).toBe(join("/h", "daemon.sock"));
+    expect(c.address).toBe("/h/daemon.sock");
     expect(loadMainConfig({ ...base, platform: "linux", env: { CRAFT_PIPE: "/s" } }).address).toBe(
       "/s",
     );

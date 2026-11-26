@@ -29,7 +29,11 @@ beforeEach(() => {
   home = mkdtempSync(join(tmpdir(), "craft-main-"));
   pipeName = `craft-main-${randomUUID().slice(0, 8)}`;
   address = process.platform === "win32" ? `\\\\.\\pipe\\${pipeName}` : join(home, "d.sock");
-  vi.stubEnv("CRAFT_PIPE", process.platform === "win32" ? pipeName : address);
+  // a decoy in the process environment: the daemon must use the env it was handed
+  vi.stubEnv(
+    "CRAFT_PIPE",
+    process.platform === "win32" ? "craft-decoy-name" : join(home, "x.sock"),
+  );
 });
 
 afterEach(async () => {
@@ -40,7 +44,11 @@ afterEach(async () => {
 });
 
 async function boot(): Promise<DaemonHandle> {
-  const handle = await startDaemon({ CRAFT_HOME: home, CRAFT_LOG_LEVEL: "warn" });
+  const handle = await startDaemon({
+    CRAFT_HOME: home,
+    CRAFT_LOG_LEVEL: "warn",
+    CRAFT_PIPE: process.platform === "win32" ? pipeName : address,
+  });
   handles.push(handle);
   return handle;
 }
@@ -80,6 +88,13 @@ describe("daemon wiring (main.ts)", () => {
     const info = JSON.parse(readFileSync(join(home, "daemon.json"), "utf8")) as { pid: number };
     expect(info.pid).toBe(process.pid);
     expect(existsSync(join(home, "daemon.token"))).toBe(true);
+  });
+
+  it("listens on the CRAFT_PIPE of its injected env, not of process.env", async () => {
+    await boot();
+    expect(process.env["CRAFT_PIPE"]).not.toBe(pipeName);
+    const c = await login(); // dials `address`, which only the injected env named
+    expect(c.messages.some((m) => m.type === "snapshot")).toBe(true);
   });
 
   it("test_g02_a_setting_changed_over_the_pipe_is_still_there_after_a_daemon_restart", async () => {
