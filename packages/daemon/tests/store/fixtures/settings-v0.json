@@ -1,0 +1,10 @@
+{
+  "signInMethod": "api-key",
+  "sessionCap": 3,
+  "teamCap": 4,
+  "defaultModel": "opus",
+  "usageThresholds": [50, 80],
+  "raceReview": true,
+  "fleetLayout": "parallel",
+  "someFutureThing": "kept"
+}

@@ -14,10 +14,10 @@
 | Runners | to be checked when the build starts |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M1 · Skeleton and spikes (2/3 tasks + T-01s) |
-| Next step | T-01 test + review, then its card |
+| Milestone | M1 · Skeleton and spikes (3/3 tasks + T-01s) · milestone card next |
+| Next step | M1-docs (architect as-built sync + docs) → milestone 1 card |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 08:39 +05:30 |
+| Last updated | 2026-11-26 13:31 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -46,11 +46,22 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 ## Known minors
 | Task | Where | Fix | Size |
 |---|---|---|---|
+| T-01 | relative @craft/protocol imports (bridge.ts:2 etc.) | workspace deps + codemod — CHANGE REQUEST before T-04/T-05 | ≈20 min |
+| T-01 | daemon/src/main.ts:183 | use injected env CRAFT_PIPE | ≈5 min |
+| T-01 | protocol/src/wire.ts:15 | clientNonce length(44) | ≈7 min |
+| T-01 | client/src/main/link.ts:135 | version-mismatch Notice (LLD §2.3) | ≈10 min |
+| T-01 | client/src/main/link.ts:193 | stale lastSeq after resync — protocol CHANGE REQUEST before M2 ends | ≈10 min |
+| T-01 | client/src/main/config.ts:30 | pipeName() into protocol | ≈10 min |
+| T-01 | client/src/preload/index.ts:16-24 | architect records ipcRenderer + ready/pickFolder/log in LLD | ≈2 min |
+| T-01 | daemon/src/server/server.ts:62-64 | stale daemon.sock on non-Windows | ≈10 min |
+| T-01 | daemon/src/store/store.ts:110 | async save | ≈2 min |
+| T-01 | daemon/src/store/settings-service.ts:11 | invalid-setting reply text (PROTOCOL_ERROR wording) — change request | ≈5 min |
 | T-02 | spikes/sdk/s5-driver.mjs:79-82 | wait on `close` not `exit`; guard the PID match | ≈2 min |
 
 ## Context additions
 | Role | Also read | Why (from gap report) |
 |---|---|---|
+| reviewer | docs/LLD.md sections for every module whose stub/signature the task fixes (foundation-type tasks: §6–§13) | T-01 review couldn't check stub signatures without them |
 | researcher | full docs/SPEC.md | Read only SPEC §6-11 on the first research step |
 
 ## Notes for the next session

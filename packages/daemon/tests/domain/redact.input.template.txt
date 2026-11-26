@@ -1,0 +1,8 @@
+API_KEY={{SK_LIVE}}
+export ANTHROPIC_API_KEY="{{SK_ANT}}"
+aws id {{AKIA}} was used
+Authorization: token={{GH}}
+jwt {{JWT}}
+{{PEM}}
+password: hunter2hunter2
+nothing secret here: sk-short and a normal sentence

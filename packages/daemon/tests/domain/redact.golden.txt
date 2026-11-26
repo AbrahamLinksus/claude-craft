@@ -1,0 +1,8 @@
+API_KEY=[hidden]
+export ANTHROPIC_API_KEY="[hidden]"
+aws id [hidden] was used
+Authorization: token=[hidden]
+jwt [hidden]
+[hidden]
+password: [hidden]
+nothing secret here: sk-short and a normal sentence
