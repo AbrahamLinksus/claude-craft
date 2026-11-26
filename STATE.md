@@ -14,10 +14,10 @@
 | Runners | to be checked when the build starts |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M1 · Skeleton and spikes (1/3 tasks) |
-| Next step | Round 1: T-01, T-02, T-03 |
+| Milestone | M1 · Skeleton and spikes (2/3 tasks + T-01s) |
+| Next step | T-01 test + review, then its card |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 08:27 +05:30 |
+| Last updated | 2026-11-26 08:39 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 

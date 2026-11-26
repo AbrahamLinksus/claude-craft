@@ -26,6 +26,7 @@
 | D-21 | 2026-11-25 | LLD trade-offs #2-#13 | Approved as proposed (Electron 45.5 pending spike 4, SDK pinned 0.3.332, pipe token handshake, PreToolUse interception, process cleanup plan, Electron's Node, DOM grid, react-virtual, electron-builder) | — | see .results/plan/lld-architect.md | — |
 | D-22 | 2026-11-25 | Install plan + 5 type/lint helper packages | Approved: @types/node, @types/react, @types/react-dom, @eslint/js, globals; Node 24.11 kept locally (CI 24.22.3); pnpm 12.23 via packageManager | ~1.5 GB in user folders, no admin | Edit; cancel | — |
 | D-23 | 2026-11-26 | T-03 shell spike installs | Electron only (~250 MB in the project folder); Tauri not measured | The 'both shells measured' criterion is waived; Tauri stays the untested alternative | Install both (Rust + C++ tools); neither | T-03 |
+| D-24 | 2026-11-26 | Desktop shell (spike 4) | Electron 45.5.0 locked | p95 17–18 ms vs 50 ms target; Tauri not measured (D-23) | Tauri | T-03 |
 
 ## Tier 2 — decided by agents (overrule any time)
 | ID | Date | Decision | Chosen | Agent | Task |

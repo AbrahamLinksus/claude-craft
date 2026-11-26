@@ -59,12 +59,12 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 - Depends on: —
 - Files: spikes/shell/**, docs/spikes/shell.md
 - Context: SPEC §9 (latency), §10 · LLD §0.1, §0.7, §13.4, §17 · files: spikes/shell/*
-- Status: In progress
+- Status: Done
 - Acceptance criteria:
   - [ ] Both shells render 5 replayed streaming transcripts plus a canvas branch graph on the mono grid; keystroke-to-paint p95 and memory are measured on Windows 11 and tabled in `docs/spikes/shell.md`
   - [ ] Electron passes keystroke-to-paint p95 < 50 ms, or the report recommends Tauri with the §0.7 consequence (only `client/src/main/` is rewritten) as an owner decision
   - [ ] How each shell's main process reaches the named pipe is shown working in the spike (a round trip of one JSON line)
-- Result:
+- Result: ✅ 3/3 (Tauri half waived, D-23) · Electron p95 17–18 ms over 6 runs, pipe ~4 ms, ~390 MB · review 0 major, 4 minors fixed · cost not readable
 
 ## M2 · Core scaffolding ★ (checkpoint: graft API v1 and event format locked)
 

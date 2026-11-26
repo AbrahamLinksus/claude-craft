@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Craft shell spike</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header id="top">
+      <span class="chip">SPIKE</span>
+      <span id="shell-name">browser</span>
+      <span id="stats">streams 0 | lines/s 0 | heap n/a</span>
+    </header>
+    <main id="grid">
+      <section id="panes" aria-label="Streaming transcripts"></section>
+      <section id="graph-wrap" aria-label="Branch graph"><canvas id="graph"></canvas></section>
+    </main>
+    <footer id="bottom">
+      <label for="input">&gt;</label>
+      <input id="input" autocomplete="off" spellcheck="false" autofocus aria-label="Input bar" />
+      <span id="lat">key-to-paint: n/a</span>
+    </footer>
+    <section id="panel" aria-label="Measurements">
+      <div id="pipe">pipe: not tested</div>
+      <pre id="result"></pre>
+    </section>
+    <script src="replay.js"></script>
+    <script src="graph.js"></script>
+    <script src="bench.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

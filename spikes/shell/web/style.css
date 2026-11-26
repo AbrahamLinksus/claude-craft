@@ -1,0 +1,158 @@
+:root {
+  --surface: #1f1d1a;
+  --surface2: #2a2723;
+  --text: #ece8e1;
+  --dim: #8f8a82;
+  --accent: #d97757;
+  --blue: #6aa0d8;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--surface);
+  color: var(--text);
+  font:
+    14px/20px Consolas,
+    "Cascadia Mono",
+    monospace;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+header,
+footer {
+  display: flex;
+  gap: 1ch;
+  align-items: center;
+  height: 20px;
+  padding: 0 1ch;
+  background: var(--surface2);
+  flex: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.chip {
+  background: var(--blue);
+  color: #000;
+  padding: 0 1ch;
+}
+#shell-name {
+  color: var(--accent);
+}
+#stats,
+#lat {
+  color: var(--dim);
+  margin-left: auto;
+}
+#grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  min-height: 0;
+}
+#panes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+  grid-auto-rows: minmax(8em, 1fr);
+  gap: 1px;
+  background: var(--surface2);
+  overflow: auto;
+  min-height: 0;
+}
+.pane {
+  background: var(--surface);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.pane h2 {
+  margin: 0;
+  font: inherit;
+  height: 20px;
+  padding: 0 1ch;
+  background: var(--surface2);
+  color: var(--dim);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.pane h2 b {
+  color: var(--accent);
+  font-weight: normal;
+}
+.pane pre {
+  margin: 0;
+  padding: 0 1ch;
+  flex: 1;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-all;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  font: inherit;
+}
+.pane .u {
+  color: var(--blue);
+}
+.pane .t {
+  color: var(--dim);
+}
+#graph-wrap {
+  border-left: 1px solid var(--surface2);
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+}
+#graph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+#input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: var(--text);
+  font: inherit;
+  caret-color: var(--accent);
+}
+#panel {
+  flex: none;
+  max-height: 9em;
+  overflow: auto;
+  padding: 0 1ch;
+  color: var(--dim);
+  background: var(--surface2);
+  border-top: 1px solid var(--surface);
+}
+#result {
+  margin: 0;
+  white-space: pre-wrap;
+  color: var(--text);
+}
+@media (max-width: 700px) {
+  #grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 2fr 1fr;
+  }
+  #graph-wrap {
+    border-left: 0;
+    border-top: 1px solid var(--surface2);
+  }
+  #stats {
+    display: none;
+  }
+  #panel {
+    max-height: 6em;
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "shell-spike-electron",
+  "version": "0.0.0",
+  "private": true,
+  "main": "main.js",
+  "description": "Electron shell spike (Spike 4)",
+  "devDependencies": {
+    "electron": "45.5.0"
+  }
+}
