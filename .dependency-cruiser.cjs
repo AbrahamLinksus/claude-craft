@@ -37,7 +37,10 @@ module.exports = {
     {
       name: "spawn-only-in-allowed",
       severity: "error",
-      from: { pathNot: "^packages/daemon/src/(git/worker|agent/sdk-adapter|process)/" },
+      from: {
+        pathNot:
+          "^packages/daemon/src/(git/worker|agent/sdk-adapter|process)/|^packages/client/src/main/",
+      },
       to: { path: "^node:child_process$|^child_process$" },
     },
     {
@@ -82,6 +85,6 @@ module.exports = {
     doNotFollow: { path: "node_modules" },
     tsPreCompilationDeps: true,
     tsConfig: { fileName: "tsconfig.base.json" },
-    exclude: { path: "(^|/)(node_modules|dist|coverage)/" },
+    exclude: { path: "(^|/)(node_modules|dist|coverage|out)/" },
   },
 };

@@ -68,6 +68,17 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 
 ## M2 · Core scaffolding ★ (checkpoint: graft API v1 and event format locked)
 
+### T-01s · Layer rules: let the client launcher start the background worker
+- Owner: env-setup (devops may not change lint/layer configs)
+- Depends on: —
+- Files: .dependency-cruiser.cjs
+- Context: LLD §0, CONVENTIONS layering rules · files: .dependency-cruiser.cjs · needed by T-01 (Needs file)
+- Status: Done
+- Acceptance criteria:
+  - [ ] Rule `spawn-only-in-allowed` also allows `^packages/client/src/main/` (the client launcher starts the daemon detached); every other spawn location is still rejected (a negative test still fails)
+  - [ ] The build output folder `out` is in `options.exclude`; `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes on main
+- Result: ✅ 2/2 · client launcher may spawn the daemon; `out` excluded · review 0 findings · checks pass
+
 ### T-04 · Command plumbing: grammar registry, prompt queue, undo journal
 - Owner: backend-coder
 - Depends on: T-01
