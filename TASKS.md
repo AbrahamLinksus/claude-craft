@@ -95,10 +95,10 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 ### T-01c · CR-1: snapshot seq, one daemon address, strict handshake nonces
 - Owner: backend-coder, frontend-coder (backend-coder: protocol `wire.ts`/`address.ts`, daemon `takeSnapshot` and `main.ts`; then frontend-coder: client `link.ts`, `config.ts`)
 - Depends on: T-01b
-- Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**
+- Files: packages/protocol/src/wire.ts, packages/protocol/src/address.ts, packages/protocol/src/index.ts, packages/daemon/src/main.ts, packages/daemon/src/server/commands.ts, packages/daemon/src/server/connection.ts, packages/daemon/src/server/transport.ts, packages/daemon/src/server/snapshot.ts, packages/daemon/tests/server/**, packages/daemon/tests/protocol/**, packages/client/src/main/link.ts, packages/client/src/main/config.ts, packages/client/tests/link/**, packages/client/tests/main/**, packages/daemon/src/server/index.ts
 - Context: SPEC US-17 · LLD §1.3, §1.5, §2.1, §2.3, §2.4, §3 · files: packages/protocol/src/{wire,index}.ts, packages/daemon/src/server/*, packages/daemon/src/main.ts, packages/client/src/main/{link,config}.ts
 - Why separate: the T-01b import change must land first (bare-name imports must resolve before this code uses them), and splitting lets T-01d, T-06, T-07 and T-08 start right after T-01b while this runs
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] `snapshot.get` and the handshake both reply `{seq, state}` built by `takeSnapshot`; a test that calls `snapshot.get` right after `bus.publish` returns (no await between) gets `seq` equal to that event's seq and a `state` that already contains its effect (snapshot read is current before `bus.publish` returns); no event with seq > the reply's `seq` reaches the socket before the reply (US-17)
   - [ ] Client link: after a `resync`, an event the link already applied (seq ≤ the reply's `seq`) is dropped, so it applies once; two `resync`s before a reply never move `lastSeq` back; a reconnect while the resync is unanswered sends `auth` without `resume` and receives a full snapshot; an error reply or a bare `Snapshot` body closes the socket and the reconnect brings a full snapshot (US-17)
@@ -151,9 +151,9 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
 ### T-06 · Client shell: top bar, statusline, tabs, prompt overlay, which-key and panel host
 - Owner: frontend-coder
 - Depends on: T-01, T-01b
-- Files: packages/graft-ui/src/**, packages/client/src/renderer/shell/**, packages/client/src/renderer/panels/host.tsx, packages/client/tests/shell/**
+- Files: packages/graft-ui/src/**, packages/client/src/renderer/shell/**, packages/client/src/renderer/panels/host.tsx, packages/client/tests/shell/**, packages/client/src/renderer/app.tsx
 - Context: SPEC US-05, US-08, US-11, US-14, US-15, US-30, §7 · LLD §13.2, §13.4, §13.5, §14 · files: packages/client/src/renderer/{app.tsx,state/*,theme/*}, packages/protocol/src/*
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] Statusline renders a session view as `TALK · notes-app · s1 · Sonnet · craft/s1 M1 S0 ↑0 · 1 session` with the TALK chip blue (LAB amber) and model colours orange Opus / blue Sonnet / teal Haiku (US-15)
   - [ ] PromptOverlay shows the queue head as "1 of 3" with the session named first; WhichKey renders a `partial` parse's next keys with name and owning graft (`s session (core) · a attempts (race)`) (US-05, US-08, S-04)
@@ -162,12 +162,23 @@ Frozen paths are built by T-01 (foundation) and by the M2 shared-code tasks T-04
   - [ ] `graft-ui` exports `Grid, Box, Text, Chip, Bar, List, Table, Canvas, theme` and the panel/widget props; no component outside `theme/` uses raw pixels or colour literals (lint check)
 - Result:
 
+### T-06s · Package links for T-06 and T-07 (graft-ui in client; Agent SDK + koffi in daemon)
+- Owner: env-setup
+- Depends on: —
+- Files: packages/client/package.json, packages/daemon/package.json, pnpm-lock.yaml, pnpm-workspace.yaml
+- Context: LLD §0.5 (package table), §6.4 (reaper tier B), DECISIONS D-21, D-27 · files: packages/*/package.json, pnpm-lock.yaml
+- Status: In progress
+- Acceptance criteria:
+  - [ ] packages/client/package.json lists `"@craft/graft-ui": "workspace:*"`; packages/daemon/package.json lists `@anthropic-ai/claude-agent-sdk` exactly 0.3.332 and `koffi` exactly 3.3.8 (D-21, D-27); `pnpm install --frozen-lockfile` succeeds on a clean clone
+  - [ ] koffi loads in the daemon runtime (Electron's Node, per LLD §0.5/D-15) — a one-line load check passes; `CHECK_NO_COVERAGE=1 bash scripts/check.sh` passes on main
+- Result:
+
 ### T-07 · AgentPort, SDK adapter and process reaper
 - Owner: agent-engineer
 - Depends on: T-01, T-01b, T-02
 - Files: packages/daemon/src/agent/**, packages/daemon/src/process/**, packages/daemon/tests/{agent,process}/**, packages/daemon/tests/fixtures/sdk/**
 - Context: SPEC US-02, US-16, US-18, §8 · LLD §6.1, §6.2, §6.4, §0.7 · files: docs/spikes/sdk.md, spikes/sdk/fixtures/*, packages/protocol/src/*
-- Status: Backlog
+- Status: In progress
 - Acceptance criteria:
   - [ ] Contract tests feed the spike's recorded SDK messages through the adapter and get `AgentText`, `ToolStarted` (with relative paths), `ToolFinished`, `SubagentStarted`, `TurnFinished` (tokens, cumulative cost, lastMessageId) and `RateLimit` per §6.2; a rate-limit message missing a window omits it and never throws
   - [ ] Error classification maps auth failure → `AUTH_REJECTED`, rate limit → `LIMITED` with `resetsAt`, `ECONNRESET`/`ENOTFOUND`/overloaded → `OFFLINE`, anything else → `AGENT_ERROR` (G-01)

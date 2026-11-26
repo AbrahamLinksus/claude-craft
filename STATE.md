@@ -7,17 +7,17 @@
 | Problem | One keyboard-first, terminal-styled screen to see and control a fleet of Claude Agent SDK sessions, each in its own git worktree, with features added as grafts |
 | Repo | AbrahamLinksus/claude-craft (public) |
 | Local folder | C:/Users/Jake/claude-craft/claude-craft (worktrees in C:/Users/Jake/claude-craft/claude-craft-wt/; start sessions in C:/Users/Jake/claude-craft) |
-| Status | Active |
+| Status | Paused (owner asked to wind down, mid milestone 2) |
 | Stage | 7 Build |
 | Design | separate system design (why: large; daemon + client are separately running parts; external service = Claude Agent SDK) |
 | Plugin | dev-team-setup 1.1.0 |
 | Runners | on, but limited: the guard treats task-runners' Bash as git-pr (no pipes/redirects), so runners skipped test/review/sync on T-03; the Orchestrator ran those steps itself. Consider running steps directly. |
 | Owner mode | builder |
 | Size | large · signals: external service (Agent SDK), multi-process (daemon/client), public plugin API, concurrency |
-| Milestone | M2 · Core scaffolding (1/8 tasks) |
-| Next step | Round: T-01c, T-01d, T-06/T-07/T-08 (max 3 at once) |
+| Milestone | M2 · Core scaffolding (1/9 tasks: T-01b done) |
+| Next step | Owner adds `koffi: true` under allowBuilds in claude-craft-wt/T-06s/pnpm-workspace.yaml and runs `pnpm install` there; then env-setup finishes T-06s → card; then T-06 (resume at test+review after wiring app.tsx) and T-07 start |
 | Started | 2026-11-25 14:13 +05:30 · Budget 0 (no cap) |
-| Last updated | 2026-11-26 14:40 +05:30 |
+| Last updated | 2026-11-26 15:13 +05:30 |
 
 Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost mode: balanced · Visuals: installed
 
@@ -73,3 +73,8 @@ Owner: Jake · GitHub owner: AbrahamLinksus · Approval mode: every-task · Cost
 - Milestone 1 approved 2026-11-26; owner chose a fresh session. CR-1 merged (D-26). Also add a simple one-command start script early (no start/dev script exists yet; README says so).
 - Taskgit gotchas on this machine: pass the repo path (C:/Users/Jake/claude-craft/claude-craft) to every taskgit command and run from C:/Users/Jake/claude-craft; set PYTHONUTF8=1 for capture.py mermaid and cost.py (Windows charmap errors). cost.py reports $0.00 here (not readable).
 - Quality-check configs (.dependency-cruiser.cjs, eslint, check.sh) can only be changed by env-setup, not devops.
+- PAUSED 2026-11-26 15:13 +05:30. Open branches (all checkpointed and pushed):
+  - T-01c: implement ✅ (incl. backend fix: server/index.ts exports takeSnapshot); test+review was mid-step when stopped — partial tester work is checkpointed; resume at test+review with a fresh runner (tester notes: 44-char nonces in 4 test files, test-server.ts:72 {seq,state}, parts.test.ts socket join, new tests per criterion, foundation e2e).
+  - T-06s: package.json edits + lockfile done; blocked because the session's permission check refused editing pnpm-workspace.yaml to allow koffi's install script (owner approved D-28 and will make the one-line edit). Then: koffi load checks (Node + Electron's Node), clean-clone frozen install, check.sh, SDK binary size.
+  - T-06: shell built, check passes; needs T-06s merged, then frontend-coder wires <Shell> into app.tsx (granted) and imports @craft/graft-ui; then test+review. Overlay position decided in D-T2-01.
+  - T-07: not started; needs T-06s (SDK + koffi).
